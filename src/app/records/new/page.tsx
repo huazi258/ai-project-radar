@@ -18,7 +18,7 @@ export default function NewRecordPage() {
             新建学习记录
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-            当前是静态表单占位，不会真实提交或保存数据。
+            填写学习记录后会保存到 Supabase records 表，后续可基于记录继续接入 AI 分析。
           </p>
         </div>
 

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import type { LearningRecord } from "@/types/record";
+import type { RecordListItem } from "@/types/record";
 
 type RecordCardProps = {
-  record: LearningRecord;
+  record: RecordListItem;
 };
 
 export function RecordCard({ record }: RecordCardProps) {
@@ -20,7 +20,7 @@ export function RecordCard({ record }: RecordCardProps) {
             {record.title}
           </h2>
           <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">
-            {record.summary}
+            {record.content}
           </p>
         </div>
         <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-600">
@@ -29,14 +29,22 @@ export function RecordCard({ record }: RecordCardProps) {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        {record.tags.map((tag) => (
+        {record.tags.length > 0 ? (
+          record.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500"
+            >
+              {tag}
+            </span>
+          ))
+        ) : (
           <span
-            key={tag}
             className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500"
           >
-            {tag}
+            未添加标签
           </span>
-        ))}
+        )}
       </div>
     </Link>
   );
