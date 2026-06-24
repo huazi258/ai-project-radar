@@ -100,7 +100,7 @@ export default async function RecordDetailPage({
           ) : null}
         </section>
 
-        <AiAnalysisPreviewPanel />
+        <AiAnalysisPreviewPanel recordId={id} />
       </main>
     </div>
   );

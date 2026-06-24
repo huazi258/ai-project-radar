@@ -25,6 +25,14 @@
   "markdown_output": "Markdown 内容"
 }
 ```
+
+服务端真实 AI 调用要求：
+
+- API Key 只从服务端环境变量 OPENAI_API_KEY 读取。
+- 优先使用结构化输出或 JSON Schema。
+- 返回字段必须固定为 summary、skills、problems、next_actions、markdown_output。
+- 不要在浏览器端暴露 OPENAI_API_KEY。
+- 当前阶段只返回分析结果，不保存 ai_reports。
 ## 2. 项目卡片生成 Prompt
 
 你是一个产品经理和全栈项目规划助手。

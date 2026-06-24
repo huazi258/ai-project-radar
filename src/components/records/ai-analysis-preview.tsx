@@ -1,50 +1,93 @@
-export function AiAnalysisPreviewPanel() {
+"use client";
+
+import { useState } from "react";
+import { AiAnalysisResult } from "@/components/ai-output/ai-analysis-result";
+import type { AiRecordAnalysis } from "@/types/ai";
+
+type AiAnalysisPreviewPanelProps = {
+  recordId: string;
+};
+
+type AnalyzeResponse = {
+  analysis?: AiRecordAnalysis;
+  error?: string;
+};
+
+export function AiAnalysisPreviewPanel({
+  recordId,
+}: AiAnalysisPreviewPanelProps) {
+  const [analysis, setAnalysis] = useState<AiRecordAnalysis | null>(null);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleAnalyze() {
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/api/records/${recordId}/analyze`, {
+        method: "POST",
+      });
+      const result = (await response.json()) as AnalyzeResponse;
+
+      if (!response.ok || !result.analysis) {
+        setError(result.error ?? "AI 分析失败，请稍后重试。");
+        return;
+      }
+
+      setAnalysis(result.analysis);
+    } catch (analyzeError) {
+      setError(
+        analyzeError instanceof Error
+          ? analyzeError.message
+          : "AI 分析失败，请稍后重试。",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <section className="rounded-lg border border-zinc-200 bg-white">
       <div className="border-b border-zinc-200 px-5 py-4">
-        <h2 className="text-base font-semibold text-zinc-950">AI 分析占位区</h2>
+        <h2 className="text-base font-semibold text-zinc-950">AI 分析</h2>
       </div>
 
       <div className="grid gap-6 p-5">
-        <div>
-          <h3 className="text-sm font-medium text-zinc-500">AI 分析结果</h3>
-          <p className="mt-2 leading-7 text-zinc-700">
-            当前阶段还没有接入 AI 分析。后续会在这里展示摘要、问题发现和
-            Markdown 输出。
-          </p>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-medium text-zinc-500">技能标签</h3>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <span className="rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-600">
-              等待 AI 分析
-            </span>
+        {!analysis ? (
+          <div className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-4">
+            <h3 className="text-sm font-medium text-zinc-700">
+              等待开始分析
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-500">
+              点击按钮后会调用服务端 AI 分析接口，并在这里展示分析结果。
+              本阶段不会保存到数据库。
+            </p>
           </div>
-        </div>
+        ) : (
+          <AiAnalysisResult analysis={analysis} />
+        )}
 
-        <div>
-          <h3 className="text-sm font-medium text-zinc-500">下一步任务</h3>
-          <ul className="mt-3 grid gap-2">
-            <li className="rounded-md border border-dashed border-zinc-200 px-3 py-2 text-sm text-zinc-500">
-              AI 分析完成后将在这里展示建议任务。
-            </li>
-          </ul>
-        </div>
+        {isLoading ? (
+          <p className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
+            正在分析记录内容...
+          </p>
+        ) : null}
 
-        <div>
-          <h3 className="text-sm font-medium text-zinc-500">Markdown 预览</h3>
-          <pre className="mt-3 overflow-x-auto rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
-            {"AI 分析完成后将在这里展示 Markdown 内容。"}
-          </pre>
-        </div>
+        {error ? (
+          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
+        ) : null}
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
-            className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+            onClick={handleAnalyze}
+            disabled={isLoading}
+            className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
           >
-            开始 AI 分析
+            {isLoading ? "分析中..." : "开始 AI 分析"}
           </button>
           <button
             type="button"
