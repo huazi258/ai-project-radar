@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AiAnalysisPreviewPanel } from "@/components/records/ai-analysis-preview";
+import { getLatestAiReportForRecord } from "@/lib/ai-reports/queries";
 import { getCurrentUserRecordById } from "@/lib/records/queries";
 
 type RecordDetailPageProps = {
@@ -13,11 +14,17 @@ export default async function RecordDetailPage({
   params,
 }: RecordDetailPageProps) {
   const { id } = await params;
-  const { record, error, isAuthenticated } = await getCurrentUserRecordById(id);
+  const { record, error, isAuthenticated, userId } =
+    await getCurrentUserRecordById(id);
 
   if (!isAuthenticated) {
     redirect("/login");
   }
+
+  const latestReport =
+    record && userId
+      ? await getLatestAiReportForRecord(record.id, userId)
+      : { report: null, error: null };
 
   return (
     <div className="px-6 py-10">
@@ -100,7 +107,11 @@ export default async function RecordDetailPage({
           ) : null}
         </section>
 
-        <AiAnalysisPreviewPanel recordId={id} />
+        <AiAnalysisPreviewPanel
+          initialAnalysis={latestReport.report}
+          initialError={latestReport.error}
+          recordId={id}
+        />
       </main>
     </div>
   );

@@ -1,46 +1,11 @@
 import OpenAI from "openai";
-import { fetch, ProxyAgent } from "undici";
-import type { ClientOptions } from "openai";
 import type { AiRecordAnalysis, AnalyzeRecordInput } from "@/types/ai";
 
-type OpenAIFetch = ClientOptions["fetch"];
-
-const analysisSchema = {
-  type: "object",
-  additionalProperties: false,
-  required: [
-    "summary",
-    "skills",
-    "problems",
-    "next_actions",
-    "markdown_output",
-  ],
-  properties: {
-    summary: {
-      type: "string",
-      description: "100 字以内的学习记录摘要。",
-    },
-    skills: {
-      type: "array",
-      items: { type: "string" },
-      description: "3 到 6 个技能标签。",
-    },
-    problems: {
-      type: "array",
-      items: { type: "string" },
-      description: "当前记录暴露的问题。",
-    },
-    next_actions: {
-      type: "array",
-      items: { type: "string" },
-      description: "2 到 5 条可执行的下一步行动。",
-    },
-    markdown_output: {
-      type: "string",
-      description: "适合复制到 Obsidian 的 Markdown 内容。",
-    },
-  },
-} as const;
+function assertStringArray(value: unknown, fieldName: string) {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
+    throw new Error(`AI 返回内容缺少 ${fieldName} 字符串数组。`);
+  }
+}
 
 function assertAnalysisShape(value: unknown): asserts value is AiRecordAnalysis {
   if (!value || typeof value !== "object") {
@@ -53,25 +18,26 @@ function assertAnalysisShape(value: unknown): asserts value is AiRecordAnalysis 
     throw new Error("AI 返回内容缺少 summary。");
   }
 
-  if (!Array.isArray(result.skills)) {
-    throw new Error("AI 返回内容缺少 skills 数组。");
-  }
-
-  if (!Array.isArray(result.problems)) {
-    throw new Error("AI 返回内容缺少 problems 数组。");
-  }
-
-  if (!Array.isArray(result.next_actions)) {
-    throw new Error("AI 返回内容缺少 next_actions 数组。");
-  }
+  assertStringArray(result.skills, "skills");
+  assertStringArray(result.problems, "problems");
+  assertStringArray(result.next_actions, "next_actions");
 
   if (typeof result.markdown_output !== "string") {
     throw new Error("AI 返回内容缺少 markdown_output。");
   }
 }
 
-function buildInput(record: AnalyzeRecordInput) {
+function buildUserPrompt(record: AnalyzeRecordInput) {
   return [
+    "请分析下面这条学习记录，并且只输出 JSON，不要输出 Markdown 代码块或额外解释。",
+    "",
+    "JSON 必须包含以下字段：",
+    "- summary: string，100 字以内的内容摘要",
+    "- skills: string[]，3 到 6 个技能标签",
+    "- problems: string[]，当前暴露的问题",
+    "- next_actions: string[]，2 到 5 条可执行的下一步行动",
+    "- markdown_output: string，适合复制到 Obsidian 的 Markdown 内容",
+    "",
     `标题：${record.title}`,
     `类型：${record.type}`,
     `标签：${record.tags.length > 0 ? record.tags.join(", ") : "无"}`,
@@ -80,24 +46,10 @@ function buildInput(record: AnalyzeRecordInput) {
   ].join("\n");
 }
 
-function createOpenAIClient() {
-  const proxyUrl = process.env.OPENAI_PROXY_URL;
-
-  if (!proxyUrl) {
-    return new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      timeout: 60_000,
-    });
-  }
-
-  const proxyAgent = new ProxyAgent(proxyUrl);
-
+function createDeepSeekClient() {
   return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    fetch: fetch as unknown as OpenAIFetch,
-    fetchOptions: {
-      dispatcher: proxyAgent,
-    },
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com",
     timeout: 60_000,
   });
 }
@@ -105,39 +57,41 @@ function createOpenAIClient() {
 export async function analyzeRecord(
   record: AnalyzeRecordInput,
 ): Promise<AiRecordAnalysis> {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error("缺少服务端环境变量 OPENAI_API_KEY。");
+  if (!process.env.DEEPSEEK_API_KEY) {
+    throw new Error("缺少服务端环境变量 DEEPSEEK_API_KEY。");
   }
 
-  const client = createOpenAIClient();
+  const client = createDeepSeekClient();
 
   try {
-    const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL ?? "gpt-5.5",
-      instructions:
-        "你是一个学习记录整理助手。请把用户输入的学习记录整理成结构化结果。输出必须严格符合 JSON Schema，不要输出额外解释。",
-      input: buildInput(record),
-      text: {
-        format: {
-          type: "json_schema",
-          name: "record_analysis",
-          description: "学习记录 AI 分析结果。",
-          strict: true,
-          schema: analysisSchema,
+    const completion = await client.chat.completions.create({
+      model: process.env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content:
+            "你是一个学习记录整理助手。你必须输出合法 JSON 对象，不要输出任何额外解释、前后缀或 Markdown 代码块。",
         },
-      },
+        {
+          role: "user",
+          content: buildUserPrompt(record),
+        },
+      ],
     });
 
-    if (!response.output_text) {
-      throw new Error("AI 没有返回可解析的文本内容。");
+    const content = completion.choices[0]?.message?.content;
+
+    if (!content) {
+      throw new Error("DeepSeek 没有返回可解析的内容。");
     }
 
     let parsed: unknown;
 
     try {
-      parsed = JSON.parse(response.output_text);
+      parsed = JSON.parse(content);
     } catch {
-      throw new Error("AI 返回内容不是有效 JSON。");
+      throw new Error("DeepSeek 返回内容不是有效 JSON。");
     }
 
     assertAnalysisShape(parsed);

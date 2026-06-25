@@ -28,10 +28,14 @@
 
 服务端真实 AI 调用要求：
 
-- API Key 只从服务端环境变量 OPENAI_API_KEY 读取。
-- 优先使用结构化输出或 JSON Schema。
+- API Key 只从服务端环境变量 DEEPSEEK_API_KEY 读取。
+- DeepSeek Base URL 使用 DEEPSEEK_BASE_URL，默认值为 https://api.deepseek.com。
+- DeepSeek Model 使用 DEEPSEEK_MODEL，默认值为 deepseek-v4-flash。
+- 使用 OpenAI SDK 调用 DeepSeek 兼容接口。
+- 使用 response_format: { type: "json_object" }。
+- system prompt 和 user prompt 都必须明确要求输出 JSON。
 - 返回字段必须固定为 summary、skills、problems、next_actions、markdown_output。
-- 不要在浏览器端暴露 OPENAI_API_KEY。
+- 不要在浏览器端暴露 DEEPSEEK_API_KEY，不要使用 NEXT_PUBLIC_DEEPSEEK_API_KEY。
 - 当前阶段只返回分析结果，不保存 ai_reports。
 ## 2. 项目卡片生成 Prompt
 

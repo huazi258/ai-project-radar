@@ -20,12 +20,14 @@ type RecordsResult = {
   records: RecordListItem[];
   error: string | null;
   isAuthenticated: boolean;
+  userId: string | null;
 };
 
 type RecordDetailResult = {
   record: RecordDetail | null;
   error: string | null;
   isAuthenticated: boolean;
+  userId: string;
 };
 
 const recordTypes = Object.keys(recordTypeLabels) as RecordType[];
@@ -83,6 +85,7 @@ export async function getCurrentUserRecords(): Promise<RecordsResult> {
       records: [],
       error: "请先登录后查看记录。",
       isAuthenticated: false,
+      userId: null,
     };
   }
 
@@ -97,6 +100,7 @@ export async function getCurrentUserRecords(): Promise<RecordsResult> {
       records: [],
       error: error.message,
       isAuthenticated: true,
+      userId: user.id,
     };
   }
 
@@ -104,6 +108,7 @@ export async function getCurrentUserRecords(): Promise<RecordsResult> {
     records: ((data ?? []) as RecordRow[]).map(toRecordListItem),
     error: null,
     isAuthenticated: true,
+    userId: user.id,
   };
 }
 
@@ -121,6 +126,7 @@ export async function getCurrentUserRecordById(
       record: null,
       error: "请先登录后查看记录。",
       isAuthenticated: false,
+      userId: "",
     };
   }
 
@@ -136,6 +142,7 @@ export async function getCurrentUserRecordById(
       record: null,
       error: error.message,
       isAuthenticated: true,
+      userId: user.id,
     };
   }
 
@@ -143,5 +150,6 @@ export async function getCurrentUserRecordById(
     record: data ? toRecordDetail(data as RecordRow) : null,
     error: null,
     isAuthenticated: true,
+    userId: user.id,
   };
 }

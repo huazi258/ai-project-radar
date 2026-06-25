@@ -2,22 +2,27 @@
 
 import { useState } from "react";
 import { AiAnalysisResult } from "@/components/ai-output/ai-analysis-result";
-import type { AiRecordAnalysis } from "@/types/ai";
+import type { AiReport } from "@/types/ai";
 
 type AiAnalysisPreviewPanelProps = {
+  initialAnalysis?: AiReport | null;
+  initialError?: string | null;
   recordId: string;
 };
 
 type AnalyzeResponse = {
-  analysis?: AiRecordAnalysis;
+  analysis?: AiReport;
+  report?: AiReport;
   error?: string;
 };
 
 export function AiAnalysisPreviewPanel({
+  initialAnalysis = null,
+  initialError = null,
   recordId,
 }: AiAnalysisPreviewPanelProps) {
-  const [analysis, setAnalysis] = useState<AiRecordAnalysis | null>(null);
-  const [error, setError] = useState("");
+  const [analysis, setAnalysis] = useState<AiReport | null>(initialAnalysis);
+  const [error, setError] = useState(initialError ?? "");
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleAnalyze() {
@@ -30,12 +35,14 @@ export function AiAnalysisPreviewPanel({
       });
       const result = (await response.json()) as AnalyzeResponse;
 
-      if (!response.ok || !result.analysis) {
+      const savedReport = result.report ?? result.analysis;
+
+      if (!response.ok || !savedReport) {
         setError(result.error ?? "AI 分析失败，请稍后重试。");
         return;
       }
 
-      setAnalysis(result.analysis);
+      setAnalysis(savedReport);
     } catch (analyzeError) {
       setError(
         analyzeError instanceof Error
@@ -60,8 +67,8 @@ export function AiAnalysisPreviewPanel({
               等待开始分析
             </h3>
             <p className="mt-2 text-sm leading-6 text-zinc-500">
-              点击按钮后会调用服务端 AI 分析接口，并在这里展示分析结果。
-              本阶段不会保存到数据库。
+              点击按钮后会调用服务端 AI 分析接口，成功后保存到 ai_reports
+              表，并在这里展示最近一次分析结果。
             </p>
           </div>
         ) : (
