@@ -15,6 +15,8 @@ export type ProjectRecord = ProjectCardInput & {
   user_id: string;
   source_record_id: string;
   created_at: string;
+  updated_at?: string | null;
+  prd_markdown?: string | null;
 };
 
 export type ProjectCardData = {

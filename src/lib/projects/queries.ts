@@ -13,6 +13,8 @@ type ProjectRow = {
   tech_stack: string[] | null;
   status: string;
   created_at: string;
+  updated_at?: string | null;
+  prd_markdown?: string | null;
 };
 
 type SaveProjectInput = {
@@ -24,6 +26,18 @@ type SaveProjectInput = {
 type SaveProjectResult = {
   project: ProjectRecord | null;
   error: string | null;
+};
+
+type ProjectListResult = {
+  projects: ProjectRecord[];
+  error: string | null;
+  isAuthenticated: boolean;
+};
+
+type ProjectDetailResult = {
+  project: ProjectRecord | null;
+  error: string | null;
+  isAuthenticated: boolean;
 };
 
 function toProjectRecord(row: ProjectRow): ProjectRecord {
@@ -39,6 +53,8 @@ function toProjectRecord(row: ProjectRow): ProjectRecord {
     tech_stack: row.tech_stack ?? [],
     status: row.status,
     created_at: row.created_at,
+    updated_at: row.updated_at,
+    prd_markdown: row.prd_markdown,
   };
 }
 
@@ -76,5 +92,100 @@ export async function saveProjectCard({
   return {
     project: toProjectRecord(data as ProjectRow),
     error: null,
+  };
+}
+
+export async function getCurrentUserProjects(): Promise<ProjectListResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    return {
+      projects: [],
+      error: userError.message,
+      isAuthenticated: false,
+    };
+  }
+
+  if (!user) {
+    return {
+      projects: [],
+      error: null,
+      isAuthenticated: false,
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select(
+      "id,user_id,source_record_id,name,description,target_user,pain_point,mvp_scope,tech_stack,status,created_at",
+    )
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return {
+      projects: [],
+      error: error.message,
+      isAuthenticated: true,
+    };
+  }
+
+  return {
+    projects: ((data ?? []) as ProjectRow[]).map(toProjectRecord),
+    error: null,
+    isAuthenticated: true,
+  };
+}
+
+export async function getCurrentUserProjectById(
+  id: string,
+): Promise<ProjectDetailResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    return {
+      project: null,
+      error: userError.message,
+      isAuthenticated: false,
+    };
+  }
+
+  if (!user) {
+    return {
+      project: null,
+      error: null,
+      isAuthenticated: false,
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select(
+      "id,user_id,source_record_id,name,description,target_user,pain_point,mvp_scope,tech_stack,status,created_at,updated_at,prd_markdown",
+    )
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    return {
+      project: null,
+      error: error.message,
+      isAuthenticated: true,
+    };
+  }
+
+  return {
+    project: data ? toProjectRecord(data as ProjectRow) : null,
+    error: null,
+    isAuthenticated: true,
   };
 }
