@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateProjectPrd } from "@/lib/ai/generate-project-prd";
+import { checkRateLimit, getOriginError } from "@/lib/api/request-guard";
 import {
   getCurrentUserProjectById,
   updateProjectPrd,
@@ -11,10 +12,30 @@ type GeneratePrdRouteContext = {
   }>;
 };
 
+function rateLimitResponse(retryAfterSeconds: number) {
+  return NextResponse.json(
+    {
+      error: `PRD 生成请求过于频繁，请 ${retryAfterSeconds} 秒后再试。`,
+    },
+    {
+      status: 429,
+      headers: {
+        "Retry-After": String(retryAfterSeconds),
+      },
+    },
+  );
+}
+
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: GeneratePrdRouteContext,
 ) {
+  const originError = getOriginError(request);
+
+  if (originError) {
+    return NextResponse.json({ error: originError }, { status: 403 });
+  }
+
   const { id } = await params;
   const { project, error, isAuthenticated } =
     await getCurrentUserProjectById(id);
@@ -38,6 +59,16 @@ export async function POST(
       { error: "项目不存在，或不属于当前登录用户。" },
       { status: 404 },
     );
+  }
+
+  const rateLimit = checkRateLimit({
+    key: `ai-prd:${project.user_id}`,
+    limit: 6,
+    windowMs: 60 * 60 * 1000,
+  });
+
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.retryAfterSeconds);
   }
 
   try {

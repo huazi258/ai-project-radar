@@ -81,7 +81,7 @@ export default function LoginPage() {
       return;
     }
 
-    setMessage("注册成功。请检查邮箱确认链接，或在确认后返回登录。");
+    setMessage("注册成功。请检查邮箱完成确认，然后返回登录。");
   }
 
   return (
@@ -93,8 +93,7 @@ export default function LoginPage() {
             登录 AI Project Radar
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-600">
-            使用邮箱和密码进入你的学习项目雷达。当前阶段只接入基础登录状态，
-            记录和项目数据仍然使用 mock 数据展示。
+            用邮箱和密码进入你的 AI 学习项目雷达，继续整理记录、分析学习过程，并把灵感沉淀成项目。
           </p>
         </section>
 
@@ -167,11 +166,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
             >
-              {isLoading
-                ? "处理中..."
-                : mode === "sign-in"
-                  ? "登录"
-                  : "注册"}
+              {isLoading ? "处理中..." : mode === "sign-in" ? "登录" : "注册"}
             </button>
           </form>
         </section>

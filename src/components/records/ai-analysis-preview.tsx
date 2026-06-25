@@ -147,12 +147,6 @@ export function AiAnalysisPreviewPanel({
           >
             {isGeneratingProject ? "生成中..." : "生成项目卡片"}
           </button>
-          <button
-            type="button"
-            className="inline-flex h-11 items-center justify-center rounded-md border border-zinc-300 bg-white px-5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
-          >
-            复制 Markdown
-          </button>
         </div>
       </div>
     </section>

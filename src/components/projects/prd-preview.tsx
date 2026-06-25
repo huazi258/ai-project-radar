@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CopyButton } from "@/components/common/copy-button";
 import type { ProjectRecord } from "@/types/project";
 
 type PrdPreviewProps = {
@@ -64,9 +65,16 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
       </div>
       <div className="p-5">
         {hasPrd ? (
-          <pre className="max-h-[520px] overflow-x-auto whitespace-pre-wrap rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
-            {currentMarkdown}
-          </pre>
+          <div className="grid gap-3">
+            <CopyButton
+              text={currentMarkdown}
+              label="复制 PRD Markdown"
+              disabledLabel="暂无 PRD Markdown"
+            />
+            <pre className="max-h-[520px] overflow-x-auto whitespace-pre-wrap rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
+              {currentMarkdown}
+            </pre>
+          </div>
         ) : (
           <div className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-5">
             <p className="text-sm font-medium text-zinc-700">

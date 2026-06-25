@@ -1,3 +1,4 @@
+import { CopyButton } from "@/components/common/copy-button";
 import type { AiRecordAnalysis } from "@/types/ai";
 
 type AiAnalysisResultProps = {
@@ -56,6 +57,12 @@ export function AiAnalysisResult({ analysis }: AiAnalysisResultProps) {
 
       <div>
         <h3 className="text-sm font-medium text-zinc-500">Markdown 输出</h3>
+        <CopyButton
+          text={analysis.markdown_output}
+          label="复制 AI 分析 Markdown"
+          disabledLabel="暂无 AI 分析 Markdown"
+          className="mt-3"
+        />
         <pre className="mt-3 overflow-x-auto rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
           {analysis.markdown_output}
         </pre>

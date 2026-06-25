@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateProjectCard } from "@/lib/ai/generate-project-card";
 import { getLatestAiReportForRecord } from "@/lib/ai-reports/queries";
+import { checkRateLimit, getOriginError } from "@/lib/api/request-guard";
 import { saveProjectCard } from "@/lib/projects/queries";
 import { getCurrentUserRecordById } from "@/lib/records/queries";
 
@@ -10,10 +11,30 @@ type ProjectRouteContext = {
   }>;
 };
 
+function rateLimitResponse(retryAfterSeconds: number) {
+  return NextResponse.json(
+    {
+      error: `项目卡片生成请求过于频繁，请 ${retryAfterSeconds} 秒后再试。`,
+    },
+    {
+      status: 429,
+      headers: {
+        "Retry-After": String(retryAfterSeconds),
+      },
+    },
+  );
+}
+
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: ProjectRouteContext,
 ) {
+  const originError = getOriginError(request);
+
+  if (originError) {
+    return NextResponse.json({ error: originError }, { status: 403 });
+  }
+
   const { id } = await params;
   const { record, error, isAuthenticated, userId } =
     await getCurrentUserRecordById(id);
@@ -37,6 +58,16 @@ export async function POST(
       { error: "记录不存在，或不属于当前登录用户。" },
       { status: 404 },
     );
+  }
+
+  const rateLimit = checkRateLimit({
+    key: `ai-project-card:${userId}`,
+    limit: 8,
+    windowMs: 60 * 60 * 1000,
+  });
+
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.retryAfterSeconds);
   }
 
   const { report, error: reportError } = await getLatestAiReportForRecord(

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { CopyButton } from "@/components/common/copy-button";
 import { PrdPreview } from "@/components/projects/prd-preview";
+import { formatProjectCardMarkdown } from "@/lib/markdown/project";
 import { getCurrentUserProjectById } from "@/lib/projects/queries";
 
 type ProjectDetailPageProps = {
@@ -30,6 +32,8 @@ export default async function ProjectDetailPage({
   if (!isAuthenticated) {
     redirect("/login");
   }
+
+  const projectMarkdown = project ? formatProjectCardMarkdown(project) : "";
 
   return (
     <div className="px-6 py-10">
@@ -83,6 +87,13 @@ export default async function ProjectDetailPage({
                   {project.status}
                 </span>
               </div>
+
+              <CopyButton
+                text={projectMarkdown}
+                label="复制项目卡片 Markdown"
+                disabledLabel="暂无项目卡片 Markdown"
+                className="mt-5"
+              />
 
               <dl className="mt-6 grid gap-3 rounded-md bg-zinc-50 p-4 text-sm text-zinc-600 sm:grid-cols-2">
                 <div>
