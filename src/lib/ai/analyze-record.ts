@@ -1,4 +1,7 @@
-import OpenAI from "openai";
+import {
+  assertDeepSeekApiKey,
+  createDeepSeekClient,
+} from "@/lib/ai/deepseek-client";
 import type { AiRecordAnalysis, AnalyzeRecordInput } from "@/types/ai";
 
 function assertStringArray(value: unknown, fieldName: string) {
@@ -46,20 +49,10 @@ function buildUserPrompt(record: AnalyzeRecordInput) {
   ].join("\n");
 }
 
-function createDeepSeekClient() {
-  return new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com",
-    timeout: 60_000,
-  });
-}
-
 export async function analyzeRecord(
   record: AnalyzeRecordInput,
 ): Promise<AiRecordAnalysis> {
-  if (!process.env.DEEPSEEK_API_KEY) {
-    throw new Error("缺少服务端环境变量 DEEPSEEK_API_KEY。");
-  }
+  assertDeepSeekApiKey();
 
   const client = createDeepSeekClient();
 

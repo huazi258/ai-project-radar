@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AiAnalysisResult } from "@/components/ai-output/ai-analysis-result";
 import type { AiReport } from "@/types/ai";
+import type { ProjectRecord } from "@/types/project";
 
 type AiAnalysisPreviewPanelProps = {
   initialAnalysis?: AiReport | null;
@@ -16,18 +18,25 @@ type AnalyzeResponse = {
   error?: string;
 };
 
+type ProjectResponse = {
+  project?: ProjectRecord;
+  error?: string;
+};
+
 export function AiAnalysisPreviewPanel({
   initialAnalysis = null,
   initialError = null,
   recordId,
 }: AiAnalysisPreviewPanelProps) {
+  const router = useRouter();
   const [analysis, setAnalysis] = useState<AiReport | null>(initialAnalysis);
   const [error, setError] = useState(initialError ?? "");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isGeneratingProject, setIsGeneratingProject] = useState(false);
 
   async function handleAnalyze() {
     setError("");
-    setIsLoading(true);
+    setIsAnalyzing(true);
 
     try {
       const response = await fetch(`/api/records/${recordId}/analyze`, {
@@ -50,7 +59,35 @@ export function AiAnalysisPreviewPanel({
           : "AI 分析失败，请稍后重试。",
       );
     } finally {
-      setIsLoading(false);
+      setIsAnalyzing(false);
+    }
+  }
+
+  async function handleGenerateProject() {
+    setError("");
+    setIsGeneratingProject(true);
+
+    try {
+      const response = await fetch(`/api/records/${recordId}/project`, {
+        method: "POST",
+      });
+      const result = (await response.json()) as ProjectResponse;
+
+      if (!response.ok || !result.project) {
+        setError(result.error ?? "项目卡片生成失败，请稍后重试。");
+        return;
+      }
+
+      router.push(`/projects/${result.project.id}`);
+      router.refresh();
+    } catch (projectError) {
+      setError(
+        projectError instanceof Error
+          ? projectError.message
+          : "项目卡片生成失败，请稍后重试。",
+      );
+    } finally {
+      setIsGeneratingProject(false);
     }
   }
 
@@ -75,9 +112,15 @@ export function AiAnalysisPreviewPanel({
           <AiAnalysisResult analysis={analysis} />
         )}
 
-        {isLoading ? (
+        {isAnalyzing ? (
           <p className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
             正在分析记录内容...
+          </p>
+        ) : null}
+
+        {isGeneratingProject ? (
+          <p className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
+            正在生成项目卡片...
           </p>
         ) : null}
 
@@ -91,16 +134,18 @@ export function AiAnalysisPreviewPanel({
           <button
             type="button"
             onClick={handleAnalyze}
-            disabled={isLoading}
+            disabled={isAnalyzing || isGeneratingProject}
             className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
           >
-            {isLoading ? "分析中..." : "开始 AI 分析"}
+            {isAnalyzing ? "分析中..." : "开始 AI 分析"}
           </button>
           <button
             type="button"
-            className="inline-flex h-11 items-center justify-center rounded-md border border-zinc-300 bg-white px-5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+            onClick={handleGenerateProject}
+            disabled={isAnalyzing || isGeneratingProject}
+            className="inline-flex h-11 items-center justify-center rounded-md border border-zinc-300 bg-white px-5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400"
           >
-            生成项目卡片
+            {isGeneratingProject ? "生成中..." : "生成项目卡片"}
           </button>
           <button
             type="button"

@@ -50,6 +50,8 @@ MVP 不要过大。
 技术栈优先使用 Next.js、Supabase、AI API、Tailwind CSS。
 输出必须是 JSON，不要输出额外解释。
 如果信息不足，也要返回相同 JSON 结构，不要省略字段。
+status 第一版固定使用 idea。
+当前阶段只生成项目卡片，不生成 PRD。
 
 输出格式：
 
