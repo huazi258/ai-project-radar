@@ -35,3 +35,7 @@ export type ProjectPrdPreview = {
   title: string;
   markdown: string;
 };
+
+export type ProjectPrdGeneration = {
+  prd_markdown: string;
+};

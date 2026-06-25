@@ -98,3 +98,57 @@ MVP 范围不要过大。
 
 ## 8. 后续迭代
 ```
+## 4. 阶段 7.3：项目 PRD 生成 Prompt
+
+服务端根据当前项目卡片生成简易 MVP PRD。
+
+输入字段：
+- name
+- description
+- target_user
+- pain_point
+- mvp_scope
+- tech_stack
+- status
+
+输出要求：
+- 使用 DeepSeek 兼容 OpenAI SDK。
+- API Key 只从服务端环境变量 DEEPSEEK_API_KEY 读取。
+- 使用 response_format: { type: "json_object" }。
+- system prompt 和 user prompt 必须明确要求只输出 JSON。
+- JSON 固定格式如下：
+
+```json
+{
+  "prd_markdown": "完整 PRD Markdown 内容"
+}
+```
+
+PRD Markdown 必须包含：
+
+```md
+# 项目名称
+
+## 1. 项目背景
+
+## 2. 目标用户
+
+## 3. 核心痛点
+
+## 4. MVP 功能
+
+## 5. 页面结构
+
+## 6. 数据结构
+
+## 7. 验收标准
+
+## 8. 后续迭代
+```
+
+范围限制：
+- PRD 必须基于当前项目卡片。
+- 第一版只服务 MVP。
+- 不要扩展支付、多人协作、复杂后台、插件系统等第二版功能。
+- 不要实现 Markdown 导出或复制。
+- 生成成功后只覆盖 projects.prd_markdown。

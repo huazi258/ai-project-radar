@@ -175,7 +175,7 @@ export default async function ProjectDetailPage({
           ) : null}
         </section>
 
-        <PrdPreview markdown={project?.prd_markdown} />
+        <PrdPreview projectId={project?.id} markdown={project?.prd_markdown} />
       </main>
     </div>
   );

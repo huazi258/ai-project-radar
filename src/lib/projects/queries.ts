@@ -40,6 +40,17 @@ type ProjectDetailResult = {
   isAuthenticated: boolean;
 };
 
+type UpdateProjectPrdInput = {
+  projectId: string;
+  userId: string;
+  prdMarkdown: string;
+};
+
+type UpdateProjectPrdResult = {
+  project: ProjectRecord | null;
+  error: string | null;
+};
+
 function toProjectRecord(row: ProjectRow): ProjectRecord {
   return {
     id: row.id,
@@ -187,5 +198,44 @@ export async function getCurrentUserProjectById(
     project: data ? toProjectRecord(data as ProjectRow) : null,
     error: null,
     isAuthenticated: true,
+  };
+}
+
+export async function updateProjectPrd({
+  projectId,
+  userId,
+  prdMarkdown,
+}: UpdateProjectPrdInput): Promise<UpdateProjectPrdResult> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("projects")
+    .update({
+      prd_markdown: prdMarkdown,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", projectId)
+    .eq("user_id", userId)
+    .select(
+      "id,user_id,source_record_id,name,description,target_user,pain_point,mvp_scope,tech_stack,status,created_at,updated_at,prd_markdown",
+    )
+    .maybeSingle();
+
+  if (error) {
+    return {
+      project: null,
+      error: error.message,
+    };
+  }
+
+  if (!data) {
+    return {
+      project: null,
+      error: "项目不存在，或不属于当前登录用户。",
+    };
+  }
+
+  return {
+    project: toProjectRecord(data as ProjectRow),
+    error: null,
   };
 }

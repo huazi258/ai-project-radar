@@ -1,9 +1,61 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { ProjectRecord } from "@/types/project";
+
 type PrdPreviewProps = {
+  projectId?: string;
   markdown?: string | null;
 };
 
-export function PrdPreview({ markdown }: PrdPreviewProps) {
-  const hasPrd = Boolean(markdown?.trim());
+type GeneratePrdResponse = {
+  project?: ProjectRecord;
+  prd_markdown?: string | null;
+  error?: string;
+};
+
+export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
+  const router = useRouter();
+  const [currentMarkdown, setCurrentMarkdown] = useState(markdown ?? "");
+  const [error, setError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const hasPrd = Boolean(currentMarkdown.trim());
+
+  async function handleGeneratePrd() {
+    if (!projectId) {
+      setError("项目不存在，无法生成 PRD。");
+      return;
+    }
+
+    setError("");
+    setIsGenerating(true);
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}/generate-prd`, {
+        method: "POST",
+      });
+      const result = (await response.json()) as GeneratePrdResponse;
+      const nextMarkdown =
+        result.project?.prd_markdown ?? result.prd_markdown ?? "";
+
+      if (!response.ok || !nextMarkdown) {
+        setError(result.error ?? "PRD 生成失败，请稍后重试。");
+        return;
+      }
+
+      setCurrentMarkdown(nextMarkdown);
+      router.refresh();
+    } catch (generateError) {
+      setError(
+        generateError instanceof Error
+          ? generateError.message
+          : "PRD 生成失败，请稍后重试。",
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  }
 
   return (
     <section className="rounded-lg border border-zinc-200 bg-white">
@@ -13,7 +65,7 @@ export function PrdPreview({ markdown }: PrdPreviewProps) {
       <div className="p-5">
         {hasPrd ? (
           <pre className="max-h-[520px] overflow-x-auto whitespace-pre-wrap rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
-            {markdown}
+            {currentMarkdown}
           </pre>
         ) : (
           <div className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-5">
@@ -21,17 +73,30 @@ export function PrdPreview({ markdown }: PrdPreviewProps) {
               还没有生成 PRD
             </p>
             <p className="mt-2 text-sm leading-6 text-zinc-500">
-              这里会在后续阶段展示项目 PRD 内容，本阶段只保留占位。
+              点击生成后，会基于当前项目卡片生成一份简易 MVP PRD。
             </p>
           </div>
         )}
 
+        {isGenerating ? (
+          <p className="mt-4 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
+            正在生成 PRD...
+          </p>
+        ) : null}
+
+        {error ? (
+          <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
+        ) : null}
+
         <button
           type="button"
-          disabled
-          className="mt-5 inline-flex h-11 cursor-not-allowed items-center justify-center rounded-md bg-zinc-300 px-5 text-sm font-medium text-white"
+          onClick={handleGeneratePrd}
+          disabled={isGenerating || !projectId}
+          className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
         >
-          生成 PRD
+          {isGenerating ? "生成中..." : hasPrd ? "重新生成 PRD" : "生成 PRD"}
         </button>
       </div>
     </section>
