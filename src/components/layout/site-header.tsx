@@ -12,7 +12,7 @@ const publicNavigationItems = [
 const authenticatedNavigationItems = [
   { label: "首页", href: "/" },
   { label: "学习记录", href: "/records" },
-  { label: "结构化表达", href: "/expressions" },
+  { label: "结构化表达", href: "/structure" },
   { label: "项目思考", href: "/project-thinking" },
   { label: "项目库", href: "/projects" },
   { label: "内容库", href: "/records" },

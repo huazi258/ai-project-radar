@@ -21,9 +21,9 @@
 /learning/new
 /learning/[id]
 
-/expressions
-/expressions/new
-/expressions/[id]
+/structure
+/structure/new
+/structure/[id]
 
 /project-thinking
 /project-thinking/new
@@ -69,7 +69,7 @@ Dashboard 是第二版的主工作台。
 
 ```text
 学习记录 -> /learning/new
-结构化表达 -> /expressions/new
+结构化表达 -> /structure/new
 项目思考 -> /project-thinking/new
 ```
 
@@ -119,7 +119,7 @@ Dashboard 是第二版的主工作台。
 
 ## 6. 结构化表达页面
 
-### 6.1 /expressions
+### 6.1 /structure
 
 结构化表达历史列表。
 
@@ -130,7 +130,7 @@ Dashboard 是第二版的主工作台。
 - 表达记录列表
 - 每条记录展示标题、输入摘要、创建时间
 
-### 6.2 /expressions/new
+### 6.2 /structure/new
 
 新建结构化表达页。
 
@@ -150,7 +150,7 @@ Dashboard 是第二版的主工作台。
 - 项目说明
 - 普通表达优化
 
-### 6.3 /expressions/[id]
+### 6.3 /structure/[id]
 
 结构化表达详情页。
 

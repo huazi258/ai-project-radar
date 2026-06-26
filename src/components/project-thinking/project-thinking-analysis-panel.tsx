@@ -1,0 +1,92 @@
+"use client";
+
+import { useState } from "react";
+import { ProjectThinkingResult } from "@/components/ai-output/project-thinking-result";
+import type { AiProjectThinkingAnalysisReport } from "@/types/ai";
+
+type ProjectThinkingAnalysisPanelProps = {
+  recordId: string;
+  initialAnalysis?: AiProjectThinkingAnalysisReport | null;
+  initialError?: string | null;
+};
+
+type ProjectThinkingAnalyzeResponse = {
+  report?: AiProjectThinkingAnalysisReport;
+  error?: string;
+};
+
+export function ProjectThinkingAnalysisPanel({
+  recordId,
+  initialAnalysis = null,
+  initialError = null,
+}: ProjectThinkingAnalysisPanelProps) {
+  const [analysis, setAnalysis] =
+    useState<AiProjectThinkingAnalysisReport | null>(initialAnalysis);
+  const [error, setError] = useState(initialError ?? "");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  async function handleAnalyze() {
+    setError("");
+    setIsAnalyzing(true);
+
+    try {
+      const response = await fetch(`/api/project-thinking/${recordId}/analyze`, {
+        method: "POST",
+      });
+      const result = (await response.json()) as ProjectThinkingAnalyzeResponse;
+
+      if (!response.ok || !result.report) {
+        setError(result.error ?? "项目方案生成失败，请稍后重试。");
+        return;
+      }
+
+      setAnalysis(result.report);
+    } catch (analyzeError) {
+      setError(
+        analyzeError instanceof Error
+          ? analyzeError.message
+          : "项目方案生成失败，请稍后重试。",
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }
+
+  return (
+    <aside className="h-fit rounded-lg border border-zinc-200 bg-white">
+      <div className="border-b border-zinc-200 px-5 py-4">
+        <h2 className="text-base font-semibold text-zinc-950">AI 项目方案</h2>
+      </div>
+      <div className="grid gap-5 p-5">
+        {!analysis ? (
+          <p className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-500">
+            还没有项目方案。点击按钮后，系统会根据这条项目思考生成方案并保存最近一次结果。
+          </p>
+        ) : (
+          <ProjectThinkingResult analysis={analysis} />
+        )}
+
+        {isAnalyzing ? (
+          <p className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
+            正在生成项目方案...
+          </p>
+        ) : null}
+
+        {error ? (
+          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={handleAnalyze}
+          disabled={isAnalyzing}
+          className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+        >
+          {isAnalyzing ? "生成中..." : "生成项目方案"}
+        </button>
+      </div>
+    </aside>
+  );
+}

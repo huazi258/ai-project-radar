@@ -21,7 +21,7 @@ const quickActions = [
   {
     title: "整理一段表达",
     description: "把松散想法整理成更清楚、更适合复制的结构化表达。",
-    href: "/expressions/new",
+    href: "/structure/new",
   },
   {
     title: "思考一个项目",

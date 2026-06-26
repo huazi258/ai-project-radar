@@ -46,6 +46,28 @@ export type AiExpressionStructureReport = AiExpressionStructure & {
   created_at: string;
 };
 
+export type AiProjectThinkingAnalysis = {
+  project_name: string;
+  project_summary: string;
+  target_user: string;
+  core_problem: string;
+  project_value: string;
+  mvp_features: string[];
+  page_structure: string[];
+  data_model: string[];
+  tech_stack: string[];
+  development_steps: string[];
+  markdown_output: string;
+};
+
+export type AiProjectThinkingAnalysisReport = AiProjectThinkingAnalysis & {
+  id: string;
+  user_id: string;
+  record_id: string;
+  report_type: "project_thinking_analysis";
+  created_at: string;
+};
+
 export type AnalyzeRecordInput = {
   title: string;
   content: string;

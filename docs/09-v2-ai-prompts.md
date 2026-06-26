@@ -148,10 +148,9 @@ general_polish
 输入：
 
 - title
-- idea_text
-- stage
-- constraints
-- optional_source_learning_id
+- content
+- type
+- tags
 
 AI 角色：
 
@@ -165,24 +164,39 @@ AI 角色：
 ```json
 {
   "project_name": "项目名称",
-  "direction": "项目方向",
+  "project_summary": "项目简介",
   "target_user": "目标用户",
-  "pain_point": "核心痛点",
-  "mvp_scope": ["MVP 功能1", "MVP 功能2"],
+  "core_problem": "核心问题",
+  "project_value": "项目价值",
+  "mvp_features": ["MVP 功能1", "MVP 功能2"],
+  "page_structure": ["页面1", "页面2"],
+  "data_model": ["数据表或字段1", "数据表或字段2"],
   "tech_stack": ["技术1", "技术2"],
-  "risks": ["风险1", "风险2"],
-  "next_steps": ["下一步1", "下一步2"],
-  "prd_markdown": "简易 PRD Markdown",
-  "markdown_output": "项目思考总结 Markdown"
+  "development_steps": ["开发阶段1", "开发阶段2"],
+  "markdown_output": "可选，项目方案 Markdown"
 }
 ```
 
 约束：
 
+- 只返回一个严格合法的 json 对象。
+- 不要返回 ```json 代码块。
+- 不要返回解释文字。
+- 不要输出任何前缀或后缀说明。
 - MVP 范围必须适合个人开发。
 - 技术方案优先贴合当前项目技术栈：Next.js、Supabase、AI API、Tailwind CSS。
 - 不主动扩展支付、多人协作、复杂后台、插件系统。
 - 如果信息不足，也要给出保守方案，并在 risks 中说明不确定性。
+- 不要直接写入 projects。
+- 不要生成 PRD。
+- mvp_features、page_structure、data_model、tech_stack、development_steps 都必须是字符串数组。
+- markdown_output 字段内部可以是 Markdown 字符串；如果模型没有返回，服务端会从 JSON 生成 Markdown。
+
+服务端保存要求：
+
+- DeepSeek chat completion 必须使用 response_format: { type: "json_object" }。
+- 分析成功后保存到 ai_reports，report_type 使用 project_thinking_analysis。
+- 完整 JSON 结果保存到 ai_reports.report_data。
 
 ## 5. PRD Markdown 结构
 
