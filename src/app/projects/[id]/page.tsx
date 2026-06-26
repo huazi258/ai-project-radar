@@ -95,7 +95,11 @@ export default async function ProjectDetailPage({
                 className="mt-5"
               />
 
-              <dl className="mt-6 grid gap-3 rounded-md bg-zinc-50 p-4 text-sm text-zinc-600 sm:grid-cols-2">
+              <dl className="mt-6 grid gap-3 rounded-md bg-zinc-50 p-4 text-sm text-zinc-600 sm:grid-cols-3">
+                <div>
+                  <dt className="font-medium text-zinc-500">项目状态</dt>
+                  <dd className="mt-1 text-zinc-700">{project.status}</dd>
+                </div>
                 <div>
                   <dt className="font-medium text-zinc-500">来源记录</dt>
                   <dd className="mt-1 break-all text-zinc-700">

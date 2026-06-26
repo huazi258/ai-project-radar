@@ -51,6 +51,11 @@ type UpdateProjectPrdResult = {
   error: string | null;
 };
 
+type SourceProjectResult = {
+  project: ProjectRecord | null;
+  error: string | null;
+};
+
 function toProjectRecord(row: ProjectRow): ProjectRecord {
   return {
     id: row.id,
@@ -102,6 +107,38 @@ export async function saveProjectCard({
 
   return {
     project: toProjectRecord(data as ProjectRow),
+    error: null,
+  };
+}
+
+export async function getProjectBySourceRecord({
+  userId,
+  sourceRecordId,
+}: {
+  userId: string;
+  sourceRecordId: string;
+}): Promise<SourceProjectResult> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("projects")
+    .select(
+      "id,user_id,source_record_id,name,description,target_user,pain_point,mvp_scope,tech_stack,status,created_at,updated_at,prd_markdown",
+    )
+    .eq("user_id", userId)
+    .eq("source_record_id", sourceRecordId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    return {
+      project: null,
+      error: error.message,
+    };
+  }
+
+  return {
+    project: data ? toProjectRecord(data as ProjectRow) : null,
     error: null,
   };
 }

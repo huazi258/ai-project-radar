@@ -20,16 +20,19 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
   const router = useRouter();
   const [currentMarkdown, setCurrentMarkdown] = useState(markdown ?? "");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const hasPrd = Boolean(currentMarkdown.trim());
 
   async function handleGeneratePrd() {
     if (!projectId) {
       setError("项目不存在，无法生成 PRD。");
+      setMessage("");
       return;
     }
 
     setError("");
+    setMessage("");
     setIsGenerating(true);
 
     try {
@@ -46,6 +49,7 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
       }
 
       setCurrentMarkdown(nextMarkdown);
+      setMessage("PRD 已生成并保存。");
       router.refresh();
     } catch (generateError) {
       setError(
@@ -78,7 +82,7 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
         ) : (
           <div className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-5">
             <p className="text-sm font-medium text-zinc-700">
-              还没有生成 PRD
+              尚未生成 PRD
             </p>
             <p className="mt-2 text-sm leading-6 text-zinc-500">
               点击生成后，会基于当前项目卡片生成一份简易 MVP PRD。
@@ -95,6 +99,12 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
         {error ? (
           <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error}
+          </p>
+        ) : null}
+
+        {message ? (
+          <p className="mt-4 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+            {message}
           </p>
         ) : null}
 
