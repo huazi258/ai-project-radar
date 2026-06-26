@@ -6,9 +6,10 @@ import { createClient } from "@/lib/supabase/client";
 import type { RecordType } from "@/types/record";
 
 const recordTypeOptions: { label: string; value: RecordType }[] = [
-  { label: "学习记录", value: "learning" },
+  { label: "学习记录", value: "learning_record" },
+  { label: "结构化表达", value: "structured_expression" },
+  { label: "项目思考", value: "project_thinking" },
   { label: "AI 使用记录", value: "ai_usage" },
-  { label: "项目灵感", value: "project_idea" },
   { label: "教程笔记", value: "tutorial_note" },
   { label: "每日复盘", value: "daily_review" },
 ];
@@ -25,7 +26,7 @@ export function RecordForm() {
   const supabase = useMemo(() => createClient(), []);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [type, setType] = useState<RecordType>("learning");
+  const [type, setType] = useState<RecordType>("learning_record");
   const [tags, setTags] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -31,8 +31,8 @@ export const mockRecords: LearningRecord[] = [
     title: "想到一个学习复盘自动整理工具",
     content:
       "希望把每天的学习记录自动整理成项目想法和 PRD，减少从笔记到作品之间的断层。",
-    type: "project_idea",
-    typeLabel: "项目灵感",
+    type: "project_thinking",
+    typeLabel: "项目思考",
     tags: ["学习复盘", "项目化"],
     createdAt: "周一 18:45",
     summary:

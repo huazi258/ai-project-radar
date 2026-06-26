@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import {
+  getRecordTypeStorageValues,
+  normalizeRecordType,
   recordTypeLabels,
   type RecordDetail,
   type RecordListItem,
   type RecordType,
+  type RecordTypeInput,
 } from "@/types/record";
 
 type RecordRow = {
@@ -30,15 +33,19 @@ type RecordDetailResult = {
   userId: string;
 };
 
-const recordTypes = Object.keys(recordTypeLabels) as RecordType[];
+type CreateRecordInput = {
+  title: string;
+  content: string;
+  type: RecordTypeInput;
+  tags?: string[];
+};
 
-function normalizeRecordType(value: string): RecordType {
-  if (recordTypes.includes(value as RecordType)) {
-    return value as RecordType;
-  }
-
-  return "learning";
-}
+type CreateRecordResult = {
+  record: RecordDetail | null;
+  error: string | null;
+  isAuthenticated: boolean;
+  userId: string | null;
+};
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("zh-CN", {
@@ -112,6 +119,48 @@ export async function getCurrentUserRecords(): Promise<RecordsResult> {
   };
 }
 
+export async function getCurrentUserRecordsByType(
+  type: RecordType,
+): Promise<RecordsResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      records: [],
+      error: "请先登录后查看记录。",
+      isAuthenticated: false,
+      userId: null,
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("records")
+    .select("id,title,content,type,tags,created_at")
+    .eq("user_id", user.id)
+    .in("type", getRecordTypeStorageValues(type))
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return {
+      records: [],
+      error: error.message,
+      isAuthenticated: true,
+      userId: user.id,
+    };
+  }
+
+  return {
+    records: ((data ?? []) as RecordRow[]).map(toRecordListItem),
+    error: null,
+    isAuthenticated: true,
+    userId: user.id,
+  };
+}
+
 export async function getCurrentUserRecordById(
   id: string,
 ): Promise<RecordDetailResult> {
@@ -148,6 +197,57 @@ export async function getCurrentUserRecordById(
 
   return {
     record: data ? toRecordDetail(data as RecordRow) : null,
+    error: null,
+    isAuthenticated: true,
+    userId: user.id,
+  };
+}
+
+export async function createCurrentUserRecord({
+  title,
+  content,
+  type,
+  tags = [],
+}: CreateRecordInput): Promise<CreateRecordResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      record: null,
+      error: "请先登录后再新建记录。",
+      isAuthenticated: false,
+      userId: null,
+    };
+  }
+
+  const normalizedType = normalizeRecordType(type);
+  const { data, error } = await supabase
+    .from("records")
+    .insert({
+      user_id: user.id,
+      title,
+      content,
+      type: normalizedType,
+      tags,
+    })
+    .select("id,title,content,type,tags,created_at,updated_at")
+    .single();
+
+  if (error) {
+    return {
+      record: null,
+      error: error.message,
+      isAuthenticated: true,
+      userId: user.id,
+    };
+  }
+
+  return {
+    record: toRecordDetail(data as RecordRow),
     error: null,
     isAuthenticated: true,
     userId: user.id,

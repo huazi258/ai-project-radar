@@ -39,21 +39,38 @@ AI 角色：
 
 ```json
 {
-  "summary": "100 字以内学习摘要",
-  "skills": ["技能1", "技能2"],
-  "problems": ["问题1", "问题2"],
-  "next_actions": ["行动1", "行动2"],
-  "reflection_questions": ["复盘问题1", "复盘问题2"],
+  "summary": "学习记录总结",
+  "learned_points": ["已经学到的知识点1", "已经学到的知识点2"],
+  "problems": ["当前存在的问题1", "当前存在的问题2"],
+  "suggestions": ["学习建议1", "学习建议2"],
+  "next_actions": ["下一步行动1", "下一步行动2"],
   "markdown_output": "适合复制到知识库的 Markdown"
 }
 ```
 
 约束：
 
+- 只返回一个严格合法的 json 对象。
+- 不要返回 ```json 代码块。
+- 不要返回“以下是分析结果”等解释文字。
+- 不要输出任何前缀或后缀说明。
 - 不要生成项目 PRD。
+- 不要生成项目卡片。
 - 不要把普通学习记录强行变成项目。
-- next_actions 必须具体、可执行。
-- markdown_output 应适合保存到 Obsidian。
+- 输出内容必须围绕学习记录本身。
+- learned_points、problems、suggestions、next_actions 都必须是字符串数组。
+- suggestions 和 next_actions 必须具体、可执行。
+- markdown_output 应适合保存到 Obsidian，字段内部可以是 Markdown 字符串，但整个 AI 返回值必须是 JSON 对象。
+
+服务端兼容要求：
+
+- DeepSeek chat completion 必须使用 response_format: { type: "json_object" }。
+- system prompt 和 user prompt 都必须明确包含 json 这个词。
+- 如果模型仍然返回 ```json 代码块，服务端需要先去掉代码块再 JSON.parse。
+- 如果模型在 JSON 前后输出多余文字，服务端需要尝试提取第一个 { 到最后一个 } 之间的内容再解析。
+- 服务端需要校验 summary、learned_points、problems、suggestions、next_actions、markdown_output 都存在且类型正确。
+- 分析成功后保存到 ai_reports，report_type 使用 learning_analysis。
+- 完整 JSON 结果保存到 ai_reports.report_data。
 
 ## 3. 结构化表达 Prompt
 
