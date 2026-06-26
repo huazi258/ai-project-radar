@@ -77,16 +77,16 @@ AI 角色：
 适用模块：
 
 ```text
-/expressions
-/expressions/[id]
+/structure
+/structure/[id]
 ```
 
 输入：
 
 - title
-- raw_text
-- scene
-- target_format
+- content
+- type
+- tags
 
 AI 角色：
 
@@ -109,21 +109,32 @@ general_polish
 
 ```json
 {
-  "improved_text": "优化后的完整表达",
-  "key_points": ["要点1", "要点2"],
-  "structure_notes": ["结构建议1", "结构建议2"],
-  "codex_prompt": "如果适用，输出可直接给 Codex 的任务提示词；不适用则为空字符串",
+  "core_meaning": "用户原始输入的核心意思",
+  "structured_version": "结构化后的完整表达",
+  "optimized_prompt": "优化后提示词或可复制表达",
+  "suggestions": ["补充建议1", "补充建议2"],
   "markdown_output": "适合复制的 Markdown"
 }
 ```
 
 约束：
 
+- 只返回一个严格合法的 json 对象。
+- 不要返回 ```json 代码块。
+- 不要返回解释文字。
+- 不要输出任何前缀或后缀说明。
 - 不改变用户原意。
 - 不虚构用户没有提供的事实。
-- 如果 scene 是 codex_task，需要输出包含目标、范围、禁止事项、验收标准的任务提示词。
 - 不直接创建项目卡片。
 - 不直接生成 PRD。
+- suggestions 必须是字符串数组。
+- markdown_output 字段内部可以是 Markdown 字符串，但整个 AI 返回值必须是 JSON 对象。
+
+服务端保存要求：
+
+- DeepSeek chat completion 必须使用 response_format: { type: "json_object" }。
+- 分析成功后保存到 ai_reports，report_type 使用 expression_structure。
+- 完整 JSON 结果保存到 ai_reports.report_data。
 
 ## 4. 项目思考 Prompt
 

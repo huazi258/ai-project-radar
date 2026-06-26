@@ -30,6 +30,22 @@ export type AiLearningAnalysisReport = AiLearningAnalysis & {
   created_at: string;
 };
 
+export type AiExpressionStructure = {
+  core_meaning: string;
+  structured_version: string;
+  optimized_prompt: string;
+  suggestions: string[];
+  markdown_output: string;
+};
+
+export type AiExpressionStructureReport = AiExpressionStructure & {
+  id: string;
+  user_id: string;
+  record_id: string;
+  report_type: "expression_structure";
+  created_at: string;
+};
+
 export type AnalyzeRecordInput = {
   title: string;
   content: string;
