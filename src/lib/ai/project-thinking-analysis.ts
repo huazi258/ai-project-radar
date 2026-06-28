@@ -118,7 +118,7 @@ function assertProjectThinkingShape(
 
 function extractJsonContent(content: string) {
   const trimmed = content.trim();
-  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  const fencedMatch = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
   const withoutFence = fencedMatch?.[1]?.trim() ?? trimmed;
   const start = withoutFence.indexOf("{");
   const end = withoutFence.lastIndexOf("}");
@@ -254,11 +254,6 @@ export async function analyzeProjectThinking(
     if (!content) {
       throw new Error("DeepSeek 没有返回可解析的内容。");
     }
-
-    console.log(
-      "[project-thinking-analysis] DeepSeek raw content:",
-      content.slice(0, 1000),
-    );
 
     return parseProjectThinkingJson(content);
   } catch (error) {

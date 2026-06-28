@@ -5,7 +5,7 @@ type LearningAnalysisResultProps = {
   analysis: AiLearningAnalysis;
 };
 
-function ListSection({
+function TextSection({
   title,
   items,
 }: {
@@ -15,22 +15,15 @@ function ListSection({
   return (
     <div>
       <h3 className="section-label">{title}</h3>
-      <ul className="mt-3 grid gap-2">
-        {items.length > 0 ? (
-          items.map((item) => (
-            <li
-              key={item}
-              className="content-panel text-sm leading-6 text-[#4d5a70]"
-            >
-              {item}
-            </li>
-          ))
-        ) : (
-          <li className="content-panel border-dashed text-sm text-[#758197]">
-            暂无内容
-          </li>
-        )}
-      </ul>
+      <div
+        className={`content-panel mt-3 text-sm leading-7 whitespace-pre-line ${
+          items.length > 0
+            ? "text-[#4d5a70]"
+            : "border-dashed text-[#758197]"
+        }`}
+      >
+        {items.length > 0 ? items.join("\n") : "暂无内容"}
+      </div>
     </div>
   );
 }
@@ -45,10 +38,10 @@ export function LearningAnalysisResult({
         <p className="mt-3 leading-7 text-[#39465e]">{analysis.summary}</p>
       </div>
 
-      <ListSection title="已学知识点" items={analysis.learned_points} />
-      <ListSection title="当前问题" items={analysis.problems} />
-      <ListSection title="学习建议" items={analysis.suggestions} />
-      <ListSection title="下一步行动" items={analysis.next_actions} />
+      <TextSection title="已学知识点" items={analysis.learned_points} />
+      <TextSection title="当前问题" items={analysis.problems} />
+      <TextSection title="学习建议" items={analysis.suggestions} />
+      <TextSection title="下一步行动" items={analysis.next_actions} />
 
       <div>
         <h3 className="section-label">可复制内容</h3>
@@ -58,9 +51,6 @@ export function LearningAnalysisResult({
           disabledLabel="暂无学习建议 Markdown"
           className="mt-3"
         />
-        <pre className="markdown-panel mt-3">
-          {analysis.markdown_output}
-        </pre>
       </div>
     </div>
   );

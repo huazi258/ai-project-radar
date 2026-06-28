@@ -148,22 +148,17 @@ export default async function ProjectDetailPage({
 
                 <section className="content-panel sm:col-span-2">
                   <h2 className="section-label">MVP 功能</h2>
-                  <ul className="mt-3 grid gap-2">
-                    {project.mvp_scope.length > 0 ? (
-                      project.mvp_scope.map((item) => (
-                        <li
-                          key={item}
-                          className="rounded-xl border border-[#e1e6ef] bg-white px-3 py-2 text-sm leading-6 text-[#4d5a70]"
-                        >
-                          {item}
-                        </li>
-                      ))
-                    ) : (
-                      <li className="rounded-xl border border-dashed border-[#d6ddea] px-3 py-2 text-sm text-[#758197]">
-                        暂未生成 MVP 功能
-                      </li>
-                    )}
-                  </ul>
+                  <p
+                    className={`mt-3 text-sm leading-7 whitespace-pre-line ${
+                      project.mvp_scope.length > 0
+                        ? "text-[#4d5a70]"
+                        : "text-[#758197]"
+                    }`}
+                  >
+                    {project.mvp_scope.length > 0
+                      ? project.mvp_scope.join("\n")
+                      : "暂未生成 MVP 功能"}
+                  </p>
                 </section>
 
                 <section className="content-panel sm:col-span-2">

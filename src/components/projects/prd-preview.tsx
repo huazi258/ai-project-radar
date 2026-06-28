@@ -74,15 +74,19 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
       </div>
       <div className="p-5">
         {hasPrd ? (
-          <div className="grid gap-3">
+          <div className="content-panel">
+            <p className="text-sm font-semibold text-[#344057]">
+              PRD 已生成并保存
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[#718096]">
+              使用复制按钮获取完整 Markdown；重新生成会覆盖当前版本。
+            </p>
             <CopyButton
               text={currentMarkdown}
               label="复制 PRD Markdown"
               disabledLabel="暂无 PRD Markdown"
+              className="mt-4"
             />
-            <pre className="markdown-panel max-h-[34rem]">
-              {currentMarkdown}
-            </pre>
           </div>
         ) : (
           <div className="content-panel border-dashed p-5">

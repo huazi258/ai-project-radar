@@ -66,7 +66,7 @@ function assertLearningAnalysisShape(
 
 function extractJsonContent(content: string) {
   const trimmed = content.trim();
-  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  const fencedMatch = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
   const withoutFence = fencedMatch?.[1]?.trim() ?? trimmed;
   const start = withoutFence.indexOf("{");
   const end = withoutFence.lastIndexOf("}");
@@ -182,11 +182,6 @@ export async function analyzeLearningRecord(
     if (!content) {
       throw new Error("DeepSeek 没有返回可解析的内容。");
     }
-
-    console.log(
-      "[learning-analysis] DeepSeek raw content:",
-      content.slice(0, 1000),
-    );
 
     return parseAIJson(content);
   } catch (error) {

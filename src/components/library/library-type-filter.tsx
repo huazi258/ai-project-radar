@@ -1,10 +1,11 @@
 import Link from "next/link";
-import type { RecordType } from "@/types/record";
 
-type LibraryFilterValue = "all" | Extract<
-  RecordType,
-  "learning_record" | "structured_expression" | "project_thinking"
->;
+type LibraryFilterValue =
+  | "all"
+  | "learning_record"
+  | "structured_expression"
+  | "project_thinking"
+  | "project_card";
 
 type LibraryTypeFilterProps = {
   activeType: LibraryFilterValue;
@@ -19,6 +20,7 @@ const filters: { label: string; value: LibraryFilterValue; href: string }[] = [
     href: "/library?type=structured_expression",
   },
   { label: "项目思考", value: "project_thinking", href: "/library?type=project_thinking" },
+  { label: "项目卡片", value: "project_card", href: "/library?type=project_card" },
 ];
 
 export function LibraryTypeFilter({ activeType }: LibraryTypeFilterProps) {

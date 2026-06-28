@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { RadarIcon } from "@/components/common/ui-icons";
 import { SiteNavigation } from "@/components/layout/site-navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -31,19 +30,12 @@ export async function SiteHeader() {
     ? authenticatedNavigationItems
     : publicNavigationItems;
   const userLabel = user?.user_metadata?.display_name ?? user?.email;
+  const userInitial = (userLabel ?? "U").trim().slice(0, 1).toUpperCase();
   const brandHref = user ? "/dashboard" : "/";
-
-  async function signOut() {
-    "use server";
-
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-    redirect("/login");
-  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#dfe5f0]/80 bg-[#f7f9fd]/88 backdrop-blur-xl">
-      <div className="app-container flex min-h-16 flex-col gap-3 px-5 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+      <div className="app-container grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-5 py-3 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:px-6">
         <Link
           href={brandHref}
           className="group flex w-fit items-center gap-2.5 text-[#172033]"
@@ -61,25 +53,29 @@ export async function SiteHeader() {
           </span>
         </Link>
 
-        <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="col-span-2 row-start-2 min-w-0 lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:justify-self-center">
           <SiteNavigation items={navigationItems} />
+        </div>
 
-          {user ? (
-            <div className="flex items-center justify-between gap-3 border-t border-[#dfe5f0] pt-3 lg:border-t-0 lg:border-l lg:py-0 lg:pl-4">
-              <span className="max-w-48 truncate text-xs font-medium text-[#7a879b]">
+        {user ? (
+          <Link
+            href="/settings"
+            title="打开账号设置"
+            className="col-start-2 row-start-1 flex max-w-52 items-center justify-self-end gap-2 rounded-xl border border-transparent p-1.5 text-[#637087] transition-colors hover:border-[#dfe5f0] hover:bg-white/80 hover:text-[#3044bd] lg:col-start-3"
+          >
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#eef0ff] text-xs font-bold text-[#4056d6]">
+              {userInitial}
+            </span>
+            <span className="hidden min-w-0 sm:block">
+              <span className="block max-w-36 truncate text-xs font-semibold">
                 {userLabel}
               </span>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="rounded-lg border border-[#d5dcea] bg-white/80 px-3 py-2 text-xs font-semibold text-[#536078] transition-colors hover:border-[#b9c3d5] hover:text-[#1d2942]"
-                >
-                  退出登录
-                </button>
-              </form>
-            </div>
-          ) : null}
-        </div>
+              <span className="mt-0.5 block text-[0.65rem] text-[#98a2b3]">
+                账号设置
+              </span>
+            </span>
+          </Link>
+        ) : null}
       </div>
     </header>
   );

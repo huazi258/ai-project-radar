@@ -31,22 +31,17 @@ export function ExpressionStructureResult({
 
       <div>
         <h3 className="section-label">结构拆解与建议</h3>
-        <ul className="mt-3 grid gap-2">
-          {analysis.suggestions.length > 0 ? (
-            analysis.suggestions.map((suggestion) => (
-              <li
-                key={suggestion}
-                className="content-panel text-sm leading-6 text-[#4d5a70]"
-              >
-                {suggestion}
-              </li>
-            ))
-          ) : (
-            <li className="content-panel border-dashed text-sm text-[#758197]">
-              暂无建议
-            </li>
-          )}
-        </ul>
+        <div
+          className={`content-panel mt-3 text-sm leading-7 whitespace-pre-line ${
+            analysis.suggestions.length > 0
+              ? "text-[#4d5a70]"
+              : "border-dashed text-[#758197]"
+          }`}
+        >
+          {analysis.suggestions.length > 0
+            ? analysis.suggestions.join("\n")
+            : "暂无建议"}
+        </div>
       </div>
 
       <div>
@@ -57,9 +52,6 @@ export function ExpressionStructureResult({
           disabledLabel="暂无结构化表达 Markdown"
           className="mt-3"
         />
-        <pre className="markdown-panel mt-3">
-          {analysis.markdown_output}
-        </pre>
       </div>
     </div>
   );

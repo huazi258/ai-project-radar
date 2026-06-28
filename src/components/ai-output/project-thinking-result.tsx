@@ -5,26 +5,19 @@ type ProjectThinkingResultProps = {
   analysis: AiProjectThinkingAnalysis;
 };
 
-function ListSection({ title, items }: { title: string; items: string[] }) {
+function TextSection({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
       <h3 className="section-label">{title}</h3>
-      <ul className="mt-3 grid gap-2">
-        {items.length > 0 ? (
-          items.map((item) => (
-            <li
-              key={item}
-              className="content-panel text-sm leading-6 text-[#4d5a70]"
-            >
-              {item}
-            </li>
-          ))
-        ) : (
-          <li className="content-panel border-dashed text-sm text-[#758197]">
-            暂无内容
-          </li>
-        )}
-      </ul>
+      <div
+        className={`content-panel mt-3 text-sm leading-7 whitespace-pre-line ${
+          items.length > 0
+            ? "text-[#4d5a70]"
+            : "border-dashed text-[#758197]"
+        }`}
+      >
+        {items.length > 0 ? items.join("\n") : "暂无内容"}
+      </div>
     </div>
   );
 }
@@ -61,11 +54,11 @@ export function ProjectThinkingResult({ analysis }: ProjectThinkingResultProps) 
         <p className="mt-3 leading-7 text-[#4d5a70]">{analysis.project_value}</p>
       </div>
 
-      <ListSection title="MVP 功能" items={analysis.mvp_features} />
-      <ListSection title="页面结构" items={analysis.page_structure} />
-      <ListSection title="数据模型" items={analysis.data_model} />
-      <ListSection title="技术栈" items={analysis.tech_stack} />
-      <ListSection title="开发阶段" items={analysis.development_steps} />
+      <TextSection title="MVP 功能" items={analysis.mvp_features} />
+      <TextSection title="页面结构" items={analysis.page_structure} />
+      <TextSection title="数据模型" items={analysis.data_model} />
+      <TextSection title="技术栈" items={analysis.tech_stack} />
+      <TextSection title="开发阶段" items={analysis.development_steps} />
 
       <div>
         <h3 className="section-label">可复制内容</h3>
@@ -75,9 +68,6 @@ export function ProjectThinkingResult({ analysis }: ProjectThinkingResultProps) 
           disabledLabel="暂无项目方案 Markdown"
           className="mt-3"
         />
-        <pre className="markdown-panel mt-3">
-          {analysis.markdown_output}
-        </pre>
       </div>
     </div>
   );
