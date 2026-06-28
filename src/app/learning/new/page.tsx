@@ -61,22 +61,20 @@ export default function NewLearningPage() {
   }
 
   return (
-    <div className="px-6 py-10">
-      <main className="mx-auto w-full max-w-4xl">
+    <div className="app-page">
+      <main className="app-container-narrow">
         <Link
           href="/learning"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-semibold text-[#6d798e] transition-colors hover:text-[#3044bd]"
         >
-          返回学习记录
+          ← 返回学习记录
         </Link>
 
         <div className="mt-6">
-          <p className="text-sm font-medium text-zinc-500">New Learning</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
-            新建学习记录
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-            记录今天学到的内容、学习状态和投入时间。当前阶段只保存记录，不调用 AI。
+          <p className="page-kicker">New learning log</p>
+          <h1 className="page-title">新建学习记录</h1>
+          <p className="page-description">
+            记录学到了什么、哪里还不清楚，以及准备如何继续。保存后可以生成 AI 学习建议。
           </p>
         </div>
 

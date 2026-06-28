@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ExpressionStructureResult } from "@/components/ai-output/expression-structure-result";
+import { SparkIcon } from "@/components/common/ui-icons";
 import type { AiExpressionStructureReport } from "@/types/ai";
 
 type StructureGenerationPanelProps = {
@@ -53,38 +54,52 @@ export function StructureGenerationPanel({
   }
 
   return (
-    <aside className="h-fit rounded-lg border border-zinc-200 bg-white">
-      <div className="border-b border-zinc-200 px-5 py-4">
-        <h2 className="text-base font-semibold text-zinc-950">
-          AI 结构化输出
-        </h2>
+    <aside className="surface-card h-fit overflow-hidden">
+      <div className="border-b border-[#dfe5f0] bg-gradient-to-r from-[#e8f8f5] to-white px-5 py-5">
+        <div className="flex items-center gap-3">
+          <span className="grid size-9 place-items-center rounded-xl bg-white text-[#087b70] shadow-sm">
+            <SparkIcon className="size-4.5" />
+          </span>
+          <div>
+            <p className="text-[0.68rem] font-bold tracking-[0.12em] text-[#638d89] uppercase">
+              AI workspace
+            </p>
+            <h2 className="mt-0.5 font-display text-lg font-bold text-[#172033]">
+              结构化输出
+            </h2>
+          </div>
+        </div>
       </div>
       <div className="grid gap-5 p-5">
         {!analysis ? (
-          <p className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-500">
-            还没有结构化表达结果。点击按钮后，系统会整理这段表达并保存最近一次结果。
-          </p>
+          <div className="content-panel border-dashed">
+            <p className="text-sm font-semibold text-[#344057]">
+              等待整理原始输入
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[#718096]">
+              AI 会提取核心意思、重组表达，并给出可直接复制的版本。
+            </p>
+          </div>
         ) : (
           <ExpressionStructureResult analysis={analysis} />
         )}
 
         {isGenerating ? (
-          <p className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
-            正在生成结构化表达...
+          <p className="alert-neutral flex items-center gap-5">
+            <span className="loading-dot" aria-hidden="true" />
+            正在整理表达结构
           </p>
         ) : null}
 
         {error ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </p>
+          <p className="alert-error">{error}</p>
         ) : null}
 
         <button
           type="button"
           onClick={handleGenerate}
           disabled={isGenerating}
-          className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+          className="button-primary w-full"
         >
           {isGenerating ? "生成中..." : "生成结构化表达"}
         </button>

@@ -23,7 +23,10 @@ const filters: { label: string; value: LibraryFilterValue; href: string }[] = [
 
 export function LibraryTypeFilter({ activeType }: LibraryTypeFilterProps) {
   return (
-    <nav aria-label="内容类型筛选" className="flex flex-wrap gap-2">
+    <nav
+      aria-label="内容类型筛选"
+      className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-xl border border-[#dfe5f0] bg-white/70 p-1"
+    >
       {filters.map((filter) => {
         const isActive = filter.value === activeType;
 
@@ -31,10 +34,10 @@ export function LibraryTypeFilter({ activeType }: LibraryTypeFilterProps) {
           <Link
             key={filter.value}
             href={filter.href}
-            className={`inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium transition-colors ${
+            className={`inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-4 text-sm font-semibold transition-colors ${
               isActive
-                ? "bg-zinc-950 text-white"
-                : "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50"
+                ? "bg-[#17233d] text-white shadow-sm"
+                : "text-[#6d798e] hover:bg-[#f2f5fa] hover:text-[#26334d]"
             }`}
           >
             {filter.label}

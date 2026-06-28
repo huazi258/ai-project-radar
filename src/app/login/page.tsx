@@ -85,27 +85,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="px-6 py-16">
-      <main className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center">
+    <div className="app-page">
+      <main className="app-container grid gap-10 lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-center">
         <section>
-          <p className="text-sm font-medium text-zinc-500">Account</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-normal text-zinc-950">
+          <p className="page-kicker">Your workspace</p>
+          <h1 className="mt-4 max-w-2xl font-display text-[clamp(2.7rem,7vw,5.4rem)] leading-[1] font-bold tracking-[-0.06em] text-[#172033]">
             登录 AI Project Radar
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-600">
-            用邮箱和密码进入你的 AI 学习项目雷达，继续整理记录、分析学习过程，并把灵感沉淀成项目。
+          <p className="page-description mt-6 text-lg">
+            回到你的 AI 学习工作台，继续记录、整理和推进那些值得做下去的想法。
           </p>
         </section>
 
-        <section className="rounded-lg border border-zinc-200 bg-white p-6">
-          <div className="grid grid-cols-2 rounded-md bg-zinc-100 p-1">
+        <section className="form-card">
+          <div className="grid grid-cols-2 rounded-xl bg-[#f0f3f8] p-1">
             <button
               type="button"
               onClick={() => setMode("sign-in")}
-              className={`h-10 rounded-md text-sm font-medium transition-colors ${
+              className={`h-10 rounded-lg text-sm font-semibold transition-colors ${
                 mode === "sign-in"
-                  ? "bg-white text-zinc-950 shadow-sm"
-                  : "text-zinc-500 hover:text-zinc-950"
+                  ? "bg-white text-[#172033] shadow-sm"
+                  : "text-[#758197] hover:text-[#172033]"
               }`}
             >
               登录
@@ -113,10 +113,10 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setMode("sign-up")}
-              className={`h-10 rounded-md text-sm font-medium transition-colors ${
+              className={`h-10 rounded-lg text-sm font-semibold transition-colors ${
                 mode === "sign-up"
-                  ? "bg-white text-zinc-950 shadow-sm"
-                  : "text-zinc-500 hover:text-zinc-950"
+                  ? "bg-white text-[#172033] shadow-sm"
+                  : "text-[#758197] hover:text-[#172033]"
               }`}
             >
               注册
@@ -125,19 +125,19 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="mt-6 grid gap-5">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-zinc-700">邮箱</span>
+              <span className="field-label">邮箱</span>
               <input
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@example.com"
                 required
-                className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+                className="field-control"
               />
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-zinc-700">密码</span>
+              <span className="field-label">密码</span>
               <input
                 type="password"
                 value={password}
@@ -145,26 +145,22 @@ export default function LoginPage() {
                 placeholder="至少 6 位密码"
                 required
                 minLength={6}
-                className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+                className="field-control"
               />
             </label>
 
             {error ? (
-              <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                {error}
-              </p>
+              <p className="alert-error">{error}</p>
             ) : null}
 
             {message ? (
-              <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-                {message}
-              </p>
+              <p className="alert-success">{message}</p>
             ) : null}
 
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+              className="button-primary w-full"
             >
               {isLoading ? "处理中..." : mode === "sign-in" ? "登录" : "注册"}
             </button>

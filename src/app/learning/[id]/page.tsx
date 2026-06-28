@@ -28,36 +28,36 @@ export default async function LearningDetailPage({
       : { report: null, error: null };
 
   return (
-    <div className="px-6 py-10">
-      <main className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
+    <div className="app-page">
+      <main className="app-container grid gap-8 lg:grid-cols-[minmax(0,1fr)_28rem]">
         <section>
           <Link
             href="/learning"
-            className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+            className="text-sm font-semibold text-[#6d798e] transition-colors hover:text-[#3044bd]"
           >
-            返回学习记录
+            ← 返回学习记录
           </Link>
 
           {error ? (
-            <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-6">
-              <h1 className="text-lg font-semibold text-red-800">
+            <div className="alert-error mt-6 p-6">
+              <h1 className="font-display text-lg font-bold">
                 学习记录加载失败
               </h1>
-              <p className="mt-2 text-sm leading-6 text-red-700">{error}</p>
+              <p className="mt-2">{error}</p>
             </div>
           ) : null}
 
           {!error && (!record || !isLearningRecord) ? (
-            <div className="mt-6 rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center">
-              <h1 className="text-lg font-semibold text-zinc-950">
+            <div className="empty-state mt-6">
+              <h1 className="font-display text-xl font-bold text-[#172033]">
                 没有找到这条学习记录
               </h1>
-              <p className="mt-2 text-sm leading-6 text-zinc-500">
+              <p className="mt-2 text-sm leading-6 text-[#6d798e]">
                 这条记录可能不存在、不属于当前登录用户，或者不是学习记录类型。
               </p>
               <Link
                 href="/learning"
-                className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+                className="button-primary mt-5"
               >
                 返回学习记录
               </Link>
@@ -65,34 +65,40 @@ export default async function LearningDetailPage({
           ) : null}
 
           {record && isLearningRecord ? (
-            <article className="mt-6 rounded-lg border border-zinc-200 bg-white p-6">
-              <p className="text-sm font-medium text-zinc-500">
-                创建于 {record.createdAt}
-              </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
+            <article className="surface-card mt-6 p-6 sm:p-8">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="badge badge-brand">学习记录</span>
+                <p className="text-xs font-semibold text-[#8793a6]">
+                  创建于 {record.createdAt}
+                </p>
+              </div>
+              <h1 className="mt-5 font-display text-3xl font-bold tracking-[-0.04em] text-[#172033] sm:text-4xl">
                 {record.title}
               </h1>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-2">
                 {record.tags.length > 0 ? (
                   record.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500"
+                      className="badge"
                     >
                       {tag}
                     </span>
                   ))
                 ) : (
-                  <span className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500">
+                  <span className="badge">
                     未添加标签
                   </span>
                 )}
               </div>
 
-              <p className="mt-6 whitespace-pre-line leading-8 text-zinc-700">
-                {record.content}
-              </p>
+              <section className="mt-7 border-t border-[#e2e7f0] pt-7">
+                <p className="section-label">学习内容</p>
+                <p className="mt-4 whitespace-pre-line text-[0.95rem] leading-8 text-[#4d5a70]">
+                  {record.content}
+                </p>
+              </section>
             </article>
           ) : null}
         </section>

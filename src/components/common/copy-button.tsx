@@ -39,17 +39,17 @@ export function CopyButton({
         type="button"
         onClick={handleCopy}
         disabled={!canCopy}
-        className="inline-flex h-10 w-fit items-center justify-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400"
+        className="button-secondary w-fit"
       >
         {canCopy ? label : disabledLabel}
       </button>
 
       {status === "success" ? (
-        <p className="text-sm text-emerald-700">已复制</p>
+        <p className="text-sm font-semibold text-[#087b70]">已复制到剪贴板</p>
       ) : null}
 
       {status === "error" ? (
-        <p className="text-sm text-red-700">
+        <p className="text-sm font-semibold text-[#a42840]">
           复制失败，请检查浏览器剪贴板权限后重试。
         </p>
       ) : null}

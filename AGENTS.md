@@ -1,5 +1,41 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+## 当前阶段：第二版 UI / 网页设计优化
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+当前项目是 AI Project Radar 第二版，主要功能已经基本完成。
+
+本阶段的目标不是继续新增复杂功能，而是在现有页面基础上优化网页设计和 UI，使产品更统一、更清晰、更有高级感。
+
+### 当前核心任务
+
+请优先使用已配置的 `frontend-design` skill 辅助进行前端设计优化。
+
+重点优化方向：
+
+1. 统一整体视觉风格
+2. 优化导航栏、页面容器、卡片、按钮、输入框、标签、提示信息
+3. 优化学习记录、结构化表达、项目思考、项目库、项目详情页等核心页面
+4. 优化 AI 输出结果展示方式，使其更结构化、更易读
+5. 增强空状态、加载状态、错误状态的 UI 表现
+6. 保持页面简洁、现代、有 AI 工具感，不要像默认 Tailwind Demo
+
+### 重要限制
+
+1. 不要修改 Supabase 表结构。
+2. 不要破坏已有 API 逻辑。
+3. 不要删除已有功能。
+4. 不要改变现有路由。
+5. 不要大规模重构项目结构。
+6. 不要引入过重的 UI 框架。
+7. UI 优化应优先基于现有代码完成。
+8. 如果需要新增通用组件，可以放在合适的 components 目录中。
+9. 修改后必须确保原有功能仍然可用。
+
+### 优先级
+
+优先级从高到低：
+
+1. 全局布局、导航、按钮、卡片、输入框等基础 UI 统一
+2. 三个核心模块页面优化：学习记录、结构化表达、项目思考
+3. AI 输出结果展示优化
+4. 项目库和项目详情页优化
+5. 空状态、加载状态、错误状态优化
+6. 响应式适配和细节打磨

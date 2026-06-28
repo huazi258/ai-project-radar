@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProjectThinkingResult } from "@/components/ai-output/project-thinking-result";
+import { SparkIcon } from "@/components/common/ui-icons";
 import type { AiProjectThinkingAnalysisReport } from "@/types/ai";
 
 type ProjectThinkingAnalysisPanelProps = {
@@ -103,35 +104,49 @@ export function ProjectThinkingAnalysisPanel({
   }
 
   return (
-    <aside className="h-fit rounded-lg border border-zinc-200 bg-white">
-      <div className="border-b border-zinc-200 px-5 py-4">
-        <h2 className="text-base font-semibold text-zinc-950">AI 项目方案</h2>
+    <aside className="surface-card h-fit overflow-hidden">
+      <div className="border-b border-[#dfe5f0] bg-gradient-to-r from-[#f7ecfb] to-white px-5 py-5">
+        <div className="flex items-center gap-3">
+          <span className="grid size-9 place-items-center rounded-xl bg-white text-[#8b3aa3] shadow-sm">
+            <SparkIcon className="size-4.5" />
+          </span>
+          <div>
+            <p className="text-[0.68rem] font-bold tracking-[0.12em] text-[#92739a] uppercase">
+              AI project brief
+            </p>
+            <h2 className="mt-0.5 font-display text-lg font-bold text-[#172033]">
+              项目方案
+            </h2>
+          </div>
+        </div>
       </div>
       <div className="grid gap-5 p-5">
         {!analysis ? (
-          <p className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-500">
-            还没有项目方案。点击按钮后，系统会根据这条项目思考生成方案并保存最近一次结果。
-          </p>
+          <div className="content-panel border-dashed">
+            <p className="text-sm font-semibold text-[#344057]">
+              还没有项目方案
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[#718096]">
+              AI 会整理目标用户、核心问题、MVP、技术栈和开发阶段。
+            </p>
+          </div>
         ) : (
           <ProjectThinkingResult analysis={analysis} />
         )}
 
         {isAnalyzing ? (
-          <p className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
-            正在生成项目方案...
+          <p className="alert-neutral flex items-center gap-5">
+            <span className="loading-dot" aria-hidden="true" />
+            正在推演项目方案
           </p>
         ) : null}
 
         {error ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </p>
+          <p className="alert-error">{error}</p>
         ) : null}
 
         {message ? (
-          <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            {message}
-          </p>
+          <p className="alert-success">{message}</p>
         ) : null}
 
         <div className="grid gap-3">
@@ -139,7 +154,7 @@ export function ProjectThinkingAnalysisPanel({
             type="button"
             onClick={handleAnalyze}
             disabled={isAnalyzing || isCreatingProject}
-            className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+            className={`${analysis ? "button-secondary" : "button-primary"} w-full`}
           >
             {isAnalyzing ? "生成中..." : "生成项目方案"}
           </button>
@@ -148,13 +163,13 @@ export function ProjectThinkingAnalysisPanel({
             type="button"
             onClick={handleCreateProject}
             disabled={!analysis || isAnalyzing || isCreatingProject}
-            className="inline-flex h-11 items-center justify-center rounded-md border border-zinc-300 bg-white px-5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400"
+            className="button-primary w-full"
           >
             {isCreatingProject ? "保存中..." : "保存为项目卡片"}
           </button>
 
           {!analysis ? (
-            <p className="text-sm leading-6 text-zinc-500">
+            <p className="text-sm leading-6 text-[#758197]">
               生成 AI 项目方案后，才能保存为项目卡片。
             </p>
           ) : null}

@@ -1,3 +1,5 @@
+import { SubmitButton } from "@/components/common/submit-button";
+
 type LearningRecordFormProps = {
   action: (formData: FormData) => void | Promise<void>;
 };
@@ -19,29 +21,26 @@ const learningStatuses = [
 
 export function LearningRecordForm({ action }: LearningRecordFormProps) {
   return (
-    <form
-      action={action}
-      className="rounded-lg border border-zinc-200 bg-white p-6"
-    >
-      <div className="grid gap-5">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">标题</span>
+    <form action={action} className="form-card">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">标题</span>
           <input
             name="title"
             type="text"
             required
             placeholder="例如：完成 Next.js Server Actions 学习"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">学习分类</span>
+          <span className="field-label">学习分类</span>
           <select
             name="learning_category"
             required
             defaultValue="programming"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {learningCategories.map((category) => (
               <option key={category.value} value={category.value}>
@@ -52,12 +51,12 @@ export function LearningRecordForm({ action }: LearningRecordFormProps) {
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">学习状态</span>
+          <span className="field-label">学习状态</span>
           <select
             name="learning_status"
             required
             defaultValue="in_progress"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {learningStatuses.map((status) => (
               <option key={status.value} value={status.value}>
@@ -68,7 +67,7 @@ export function LearningRecordForm({ action }: LearningRecordFormProps) {
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">
+          <span className="field-label">
             学习时长（分钟）
           </span>
           <input
@@ -77,39 +76,37 @@ export function LearningRecordForm({ action }: LearningRecordFormProps) {
             min={0}
             step={1}
             placeholder="例如：45"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">标签</span>
+          <span className="field-label">标签</span>
           <input
             name="tags"
             type="text"
             placeholder="Next.js, AI, 学习复盘"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">学习内容</span>
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">学习内容</span>
           <textarea
             name="content"
             rows={12}
             required
             placeholder="写下今天学了什么、遇到了什么问题、用了哪些资料，以及下一步准备做什么。"
-            className="resize-none rounded-md border border-zinc-300 px-3 py-3 text-sm leading-6 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control min-h-72 resize-y"
           />
         </label>
       </div>
 
       <div className="mt-6 flex justify-end">
-        <button
-          type="submit"
-          className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
-        >
-          保存学习记录
-        </button>
+        <SubmitButton
+          idleLabel="保存学习记录"
+          pendingLabel="正在保存"
+        />
       </div>
     </form>
   );

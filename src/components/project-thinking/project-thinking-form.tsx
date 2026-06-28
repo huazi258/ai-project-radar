@@ -1,3 +1,5 @@
+import { SubmitButton } from "@/components/common/submit-button";
+
 type ProjectThinkingFormProps = {
   action: (formData: FormData) => void | Promise<void>;
 };
@@ -35,29 +37,26 @@ const techOptions = [
 
 export function ProjectThinkingForm({ action }: ProjectThinkingFormProps) {
   return (
-    <form
-      action={action}
-      className="rounded-lg border border-zinc-200 bg-white p-6"
-    >
-      <div className="grid gap-5">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">标题</span>
+    <form action={action} className="form-card">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">标题</span>
           <input
             name="title"
             type="text"
             required
             placeholder="例如：一个帮助整理学习记录的 AI 工具"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">项目方向</span>
+          <span className="field-label">项目方向</span>
           <select
             name="project_direction"
             required
             defaultValue="AI 应用"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {directionOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -68,12 +67,12 @@ export function ProjectThinkingForm({ action }: ProjectThinkingFormProps) {
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">目标用途</span>
+          <span className="field-label">目标用途</span>
           <select
             name="target_purpose"
             required
             defaultValue="沉淀学习成果"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {purposeOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -84,12 +83,12 @@ export function ProjectThinkingForm({ action }: ProjectThinkingFormProps) {
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">难度限制</span>
+          <span className="field-label">难度限制</span>
           <select
             name="difficulty_limit"
             required
             defaultValue="适合个人开发"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {difficultyOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -100,12 +99,12 @@ export function ProjectThinkingForm({ action }: ProjectThinkingFormProps) {
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">技术偏好</span>
+          <span className="field-label">技术偏好</span>
           <select
             name="tech_preference"
             required
             defaultValue="Next.js + Supabase"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {techOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -115,35 +114,33 @@ export function ProjectThinkingForm({ action }: ProjectThinkingFormProps) {
           </select>
         </label>
 
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">标签</span>
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">标签</span>
           <input
             name="tags"
             type="text"
             placeholder="AI, MVP, 学习工具"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">原始想法</span>
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">原始想法</span>
           <textarea
             name="content"
             rows={12}
             required
             placeholder="写下你的项目想法、当前需求、用户痛点、功能设想或开发限制。"
-            className="resize-none rounded-md border border-zinc-300 px-3 py-3 text-sm leading-6 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control min-h-72 resize-y"
           />
         </label>
       </div>
 
       <div className="mt-6 flex justify-end">
-        <button
-          type="submit"
-          className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
-        >
-          保存项目思考
-        </button>
+        <SubmitButton
+          idleLabel="保存项目思考"
+          pendingLabel="正在保存"
+        />
       </div>
     </form>
   );

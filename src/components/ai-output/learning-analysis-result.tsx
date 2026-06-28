@@ -14,19 +14,19 @@ function ListSection({
 }) {
   return (
     <div>
-      <h3 className="text-sm font-medium text-zinc-500">{title}</h3>
+      <h3 className="section-label">{title}</h3>
       <ul className="mt-3 grid gap-2">
         {items.length > 0 ? (
           items.map((item) => (
             <li
               key={item}
-              className="rounded-md border border-zinc-200 px-3 py-2 text-sm text-zinc-700"
+              className="content-panel text-sm leading-6 text-[#4d5a70]"
             >
               {item}
             </li>
           ))
         ) : (
-          <li className="rounded-md border border-dashed border-zinc-200 px-3 py-2 text-sm text-zinc-500">
+          <li className="content-panel border-dashed text-sm text-[#758197]">
             暂无内容
           </li>
         )}
@@ -39,10 +39,10 @@ export function LearningAnalysisResult({
   analysis,
 }: LearningAnalysisResultProps) {
   return (
-    <div className="grid gap-6">
-      <div>
-        <h3 className="text-sm font-medium text-zinc-500">学习记录总结</h3>
-        <p className="mt-2 leading-7 text-zinc-700">{analysis.summary}</p>
+    <div className="grid gap-5">
+      <div className="rounded-[0.9rem] border border-[#d9ddfa] bg-[#f5f6ff] p-4">
+        <h3 className="section-label text-[#5969bf]">学习记录总结</h3>
+        <p className="mt-3 leading-7 text-[#39465e]">{analysis.summary}</p>
       </div>
 
       <ListSection title="已学知识点" items={analysis.learned_points} />
@@ -51,14 +51,14 @@ export function LearningAnalysisResult({
       <ListSection title="下一步行动" items={analysis.next_actions} />
 
       <div>
-        <h3 className="text-sm font-medium text-zinc-500">Markdown 输出</h3>
+        <h3 className="section-label">可复制内容</h3>
         <CopyButton
           text={analysis.markdown_output}
           label="复制学习建议 Markdown"
           disabledLabel="暂无学习建议 Markdown"
           className="mt-3"
         />
-        <pre className="mt-3 max-h-80 overflow-x-auto rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
+        <pre className="markdown-panel mt-3">
           {analysis.markdown_output}
         </pre>
       </div>

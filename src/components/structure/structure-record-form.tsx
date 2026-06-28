@@ -1,3 +1,5 @@
+import { SubmitButton } from "@/components/common/submit-button";
+
 type StructureRecordFormProps = {
   action: (formData: FormData) => void | Promise<void>;
 };
@@ -20,29 +22,26 @@ const outputStyleOptions = [
 
 export function StructureRecordForm({ action }: StructureRecordFormProps) {
   return (
-    <form
-      action={action}
-      className="rounded-lg border border-zinc-200 bg-white p-6"
-    >
-      <div className="grid gap-5">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">标题</span>
+    <form action={action} className="form-card">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">标题</span>
           <input
             name="title"
             type="text"
             required
             placeholder="例如：整理一段给 Codex 的任务说明"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">表达用途</span>
+          <span className="field-label">表达用途</span>
           <select
             name="target_usage"
             required
             defaultValue="发给 AI"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {targetUsageOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -53,12 +52,12 @@ export function StructureRecordForm({ action }: StructureRecordFormProps) {
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">输出风格</span>
+          <span className="field-label">输出风格</span>
           <select
             name="output_style"
             required
             defaultValue="清晰简洁"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-500"
+            className="field-control"
           >
             {outputStyleOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -68,35 +67,33 @@ export function StructureRecordForm({ action }: StructureRecordFormProps) {
           </select>
         </label>
 
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">标签</span>
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">标签</span>
           <input
             name="tags"
             type="text"
             placeholder="表达, Prompt, 需求说明"
-            className="h-11 rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control"
           />
         </label>
 
-        <label className="grid gap-2">
-          <span className="text-sm font-medium text-zinc-700">原始输入</span>
+        <label className="grid gap-2 sm:col-span-2">
+          <span className="field-label">原始输入</span>
           <textarea
             name="content"
             rows={12}
             required
             placeholder="写下你想整理的一段原始描述，可以是口语化想法、需求说明、任务描述或汇报内容。"
-            className="resize-none rounded-md border border-zinc-300 px-3 py-3 text-sm leading-6 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-500"
+            className="field-control min-h-72 resize-y"
           />
         </label>
       </div>
 
       <div className="mt-6 flex justify-end">
-        <button
-          type="submit"
-          className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
-        >
-          保存结构化表达
-        </button>
+        <SubmitButton
+          idleLabel="保存结构化表达"
+          pendingLabel="正在保存"
+        />
       </div>
     </form>
   );

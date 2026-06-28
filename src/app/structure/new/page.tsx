@@ -59,22 +59,20 @@ export default function NewStructurePage() {
   }
 
   return (
-    <div className="px-6 py-10">
-      <main className="mx-auto w-full max-w-4xl">
+    <div className="app-page">
+      <main className="app-container-narrow">
         <Link
           href="/structure"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-semibold text-[#6d798e] transition-colors hover:text-[#3044bd]"
         >
-          返回结构化表达
+          ← 返回结构化表达
         </Link>
 
         <div className="mt-6">
-          <p className="text-sm font-medium text-zinc-500">New Structure</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
-            新建结构化表达
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-            保存一段需要整理的原始表达。当前阶段只保存任务，不调用 AI。
+          <p className="page-kicker">New structure</p>
+          <h1 className="page-title">新建结构化表达</h1>
+          <p className="page-description">
+            先写下原始想法，并告诉 AI 这段内容准备用在哪里、希望呈现什么风格。
           </p>
         </div>
 

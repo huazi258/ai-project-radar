@@ -63,9 +63,14 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
   }
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white">
-      <div className="border-b border-zinc-200 px-5 py-4">
-        <h2 className="text-base font-semibold text-zinc-950">PRD 展示区</h2>
+    <section className="surface-card h-fit overflow-hidden">
+      <div className="border-b border-[#dfe5f0] bg-gradient-to-r from-[#eef0ff] to-white px-5 py-5">
+        <p className="text-[0.68rem] font-bold tracking-[0.12em] text-[#7180a5] uppercase">
+          Product document
+        </p>
+        <h2 className="mt-1 font-display text-lg font-bold text-[#172033]">
+          PRD 工作区
+        </h2>
       </div>
       <div className="p-5">
         {hasPrd ? (
@@ -75,44 +80,41 @@ export function PrdPreview({ projectId, markdown }: PrdPreviewProps) {
               label="复制 PRD Markdown"
               disabledLabel="暂无 PRD Markdown"
             />
-            <pre className="max-h-[520px] overflow-x-auto whitespace-pre-wrap rounded-md bg-zinc-950 p-4 text-sm leading-6 text-zinc-100">
+            <pre className="markdown-panel max-h-[34rem]">
               {currentMarkdown}
             </pre>
           </div>
         ) : (
-          <div className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-5">
-            <p className="text-sm font-medium text-zinc-700">
+          <div className="content-panel border-dashed p-5">
+            <p className="text-sm font-semibold text-[#344057]">
               尚未生成 PRD
             </p>
-            <p className="mt-2 text-sm leading-6 text-zinc-500">
+            <p className="mt-2 text-sm leading-6 text-[#718096]">
               点击生成后，会基于当前项目卡片生成一份简易 MVP PRD。
             </p>
           </div>
         )}
 
         {isGenerating ? (
-          <p className="mt-4 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">
-            正在生成 PRD...
+          <p className="alert-neutral mt-4 flex items-center gap-5">
+            <span className="loading-dot" aria-hidden="true" />
+            正在生成 PRD
           </p>
         ) : null}
 
         {error ? (
-          <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </p>
+          <p className="alert-error mt-4">{error}</p>
         ) : null}
 
         {message ? (
-          <p className="mt-4 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            {message}
-          </p>
+          <p className="alert-success mt-4">{message}</p>
         ) : null}
 
         <button
           type="button"
           onClick={handleGeneratePrd}
           disabled={isGenerating || !projectId}
-          className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+          className="button-primary mt-5 w-full"
         >
           {isGenerating ? "生成中..." : hasPrd ? "重新生成 PRD" : "生成 PRD"}
         </button>

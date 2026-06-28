@@ -63,24 +63,20 @@ export default function NewProjectThinkingPage() {
   }
 
   return (
-    <div className="px-6 py-10">
-      <main className="mx-auto w-full max-w-4xl">
+    <div className="app-page">
+      <main className="app-container-narrow">
         <Link
           href="/project-thinking"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-semibold text-[#6d798e] transition-colors hover:text-[#3044bd]"
         >
-          返回项目思考
+          ← 返回项目思考
         </Link>
 
         <div className="mt-6">
-          <p className="text-sm font-medium text-zinc-500">
-            New Project Thinking
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
-            新建项目思考
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-            保存项目想法、目标用途、难度限制和技术偏好。当前阶段只保存记录，不调用 AI。
+          <p className="page-kicker">New project thought</p>
+          <h1 className="page-title">新建项目思考</h1>
+          <p className="page-description">
+            把还不成熟的想法写下来，补充目标、限制和技术偏好，再让 AI 帮你推演成项目方案。
           </p>
         </div>
 

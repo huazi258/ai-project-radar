@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRightIcon } from "@/components/common/ui-icons";
 import type { RecordListItem } from "@/types/record";
 
 type StructureRecordCardProps = {
@@ -9,34 +10,33 @@ export function StructureRecordCard({ record }: StructureRecordCardProps) {
   return (
     <Link
       href={`/structure/${record.id}`}
-      className="block rounded-lg border border-zinc-200 bg-white p-5 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
+      className="surface-card interactive-card group flex min-h-56 flex-col p-6 [--card-accent:#18a999]"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-zinc-500">
-            创建于 {record.createdAt}
+          <p className="text-xs font-bold tracking-[0.08em] text-[#8793a6] uppercase">
+            {record.createdAt}
           </p>
-          <h2 className="mt-2 text-lg font-semibold text-zinc-950">
+          <h2 className="mt-3 font-display text-xl font-bold tracking-[-0.025em] text-[#172033]">
             {record.title}
           </h2>
         </div>
-        <span className="w-fit rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-600">
-          查看详情
-        </span>
+        <ArrowUpRightIcon className="size-5 shrink-0 text-[#9aa5b5] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#18a999]" />
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <p className="mt-3 line-clamp-2 text-sm leading-7 text-[#66738a]">
+        {record.content}
+      </p>
+
+      <div className="mt-auto flex flex-wrap gap-2 pt-5">
         {record.tags.length > 0 ? (
           record.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500"
-            >
+            <span key={tag} className="badge">
               {tag}
             </span>
           ))
         ) : (
-          <span className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500">
+          <span className="badge">
             未添加标签
           </span>
         )}
